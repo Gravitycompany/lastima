@@ -405,61 +405,6 @@ end)
    end,
 })
 
--- teleport----------------------------------------------------------------------------------------------------
-local Main4Tab = Window:CreateTab("teleport", nil) 
-local Main4Section = Main4Tab:CreateSection("spawn")
-
--- Variables locales
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local player = game.Players.LocalPlayer
-local event = ReplicatedStorage:WaitForChild("SetPersonalSpawn")
-
-local respawnDelay = 5 -- tiempo base
-
--- // TextBox para configurar intervalo de respawn
-Tab:CreateInput({
-	Name = "Tiempo de Respawn (segundos)",
-	PlaceholderText = "Ej: 5",
-	RemoveTextAfterFocusLost = false,
-	Callback = function(value)
-		local num = tonumber(value)
-		if num then
-			respawnDelay = num
-			Rayfield:Notify({
-				Title = "Tiempo cambiado",
-				Content = "El tiempo de respawn ahora es de " .. num .. " segundos",
-				Duration = 2
-			})
-		else
-			Rayfield:Notify({
-				Title = "Error",
-				Content = "Escribe un número válido",
-				Duration = 2
-			})
-		end
-	end,
-})
-
--- // Botón para marcar tu spawn
-Tab:CreateButton({
-	Name = "Marcar mi Spawn actual",
-	Callback = function()
-		local char = player.Character
-		if not char then return end
-		local hrp = char:FindFirstChild("HumanoidRootPart")
-		if not hrp then return end
-
-		local pos = hrp.Position
-		event:FireServer(pos, respawnDelay)
-
-		Rayfield:Notify({
-			Title = "Spawn guardado",
-			Content = "Tu spawn fue guardado con éxito ✅",
-			Duration = 3
-		})
-	end
-})
-
 -- Crear pestaña de Farm
 local FarmTab = Window:CreateTab("🏗️ Farm", 4483362458)
 local FarmSection = FarmTab:CreateSection("Farm Zones") -- solo visual
@@ -504,3 +449,6 @@ end
 
 -- Crear toggles
 createFarmToggle("FARM ZONE #1 [Edificio en construcción]", 650, 779, 284)
+createFarmToggle("FARM ZONE #2 [Ciudad]", 120, 50, -300)
+createFarmToggle("FARM ZONE #3 [Montaña]", -500, 200, 600)
+
