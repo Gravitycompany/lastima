@@ -460,66 +460,47 @@ Tab:CreateButton({
 	end
 })
 
--- teleport----------------------------------------------------------------------------------------------------
-local Main4Tab = Window:CreateTab("teleport", nil) 
-local Main4Section = Main4Tab:CreateSection("spawn")
+-- Crear pestaña de Farm
+local FarmTab = Window:CreateTab("🏗️ Farm", 4483362458)
+local FarmSection = FarmTab:CreateSection("Farm Zones") -- solo visual
 
--- Crear el botón
-PerformanceTab:CreateButton({
-    Name = "Activar AntiLag",
-    Callback = function()
-        local Lighting = game:GetService("Lighting")
-        local Terrain = workspace:FindFirstChildOfClass("Terrain")
-
-        -- Ajustes del terreno
-        if Terrain then
-            Terrain.WaterWaveSize = 0
-            Terrain.WaterWaveSpeed = 0
-            Terrain.WaterReflectance = 0
-            Terrain.WaterTransparency = 0
-        end
-
-        -- Iluminación
-        Lighting.GlobalShadows = false
-        Lighting.FogEnd = 9e9
-        Lighting.Brightness = 0
-        settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
-
-        -- Partes del mapa
-        for _, v in pairs(workspace:GetDescendants()) do
-            if v:IsA("BasePart") and not v:IsA("MeshPart") then
-                v.Material = Enum.Material.Plastic
-                v.Reflectance = 0
-            elseif v:IsA("Decal") then
-                v.Transparency = 1
-            elseif v:IsA("ParticleEmitter") or v:IsA("Trail") then
-                v.Lifetime = NumberRange.new(0)
-            elseif v:IsA("Explosion") then
-                v.BlastPressure = 0
-                v.BlastRadius = 0
+-- Función para crear toggles correctamente
+local function createFarmToggle(name, posX, posY, posZ)
+    FarmTab:CreateToggle({  -- ✅ se llama a la pestaña, no a la sección
+        Name = name,
+        CurrentValue = false,
+        Flag = name,
+        Callback = function(state)
+            if state then
+                getgenv().loopToCoordinates = true
+                local function teleportLoop()
+                    while getgenv().loopToCoordinates do
+                        local success, err = pcall(function()
+                            local player = game.Players.LocalPlayer
+                            local character = player.Character or player.CharacterAdded:Wait()
+                            local rootPart = character:WaitForChild("HumanoidRootPart", 5)
+                            if rootPart then
+                                rootPart.CFrame = CFrame.new(posX, posY, posZ)
+                            end
+                        end)
+                        if not success then
+                            warn("Error durante el teletransporte: "..err)
+                        end
+                        task.wait(2)
+                    end
+                end
+                spawn(teleportLoop)
+                game.Players.LocalPlayer.CharacterAdded:Connect(function()
+                    if getgenv().loopToCoordinates then
+                        spawn(teleportLoop)
+                    end
+                end)
+            else
+                getgenv().loopToCoordinates = false
             end
         end
+    })
+end
 
-        -- Efectos visuales
-        for _, v in pairs(Lighting:GetChildren()) do
-            if v:IsA("BlurEffect") or v:IsA("SunRaysEffect") or 
-               v:IsA("ColorCorrectionEffect") or v:IsA("BloomEffect") or 
-               v:IsA("DepthOfFieldEffect") then
-                v.Enabled = false
-            end
-        end
-
-        -- Destruir efectos nuevos en tiempo real
-        workspace.DescendantAdded:Connect(function(v)
-            if v:IsA("ForceField") or v:IsA("Sparkles") or v:IsA("Smoke") or v:IsA("Fire") then
-                v:Destroy()
-            end
-        end)
-
-        Rayfield:Notify({
-            Title = "AntiLag Activado",
-            Content = "Optimizaste el juego con éxito ⚡",
-            Duration = 4
-        })
-    end
-})
+-- Crear toggles
+createFarmToggle("FARM ZONE #1 [Edificio en construcción]", 650, 779, 284)
