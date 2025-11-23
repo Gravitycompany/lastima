@@ -744,180 +744,119 @@ createFarmToggle("FARM ZONE #2 [2]", -2000, 95, 300)
 createFarmToggle("FARM ZONE #3 [3]", 3000, 97, 900)
 
 
-local SettingTab = Window:CreateTab("Setting")
-SettingTab:CreateSection("Opciones")
+-- 🔧 TAB DE SETTING
+local SettingTab = Window:CreateTab("Setting", 4483362458)
+local SettingSection = SettingTab:CreateSection("Opciones")
+
 
 local AntiAFK_Enabled = false
-local AntiAFK_Connection = nil
-
 SettingTab:CreateButton({
-    Name = "Anti-AFK (Activar / Desactivar)",
+    Name = "Anti-AFK (Toggle)",
     Callback = function()
         AntiAFK_Enabled = not AntiAFK_Enabled
 
-        local player = game:GetService("Players").LocalPlayer
-        local vu = game:GetService("VirtualUser")
-
         if AntiAFK_Enabled then
-            if AntiAFK_Connection then AntiAFK_Connection:Disconnect() end
+            local player = game:GetService("Players").LocalPlayer
 
-            AntiAFK_Connection = player.Idled:Connect(function()
-                vu:Button2Down(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
-                task.wait(1)
-                vu:Button2Up(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
-            end)
-
-            Rayfield:Notify({
-                Title = "Anti-AFK",
-                Content = "✅ Activado",
-                Duration = 6
-            })
-
-        else
-            if AntiAFK_Connection then
-                AntiAFK_Connection:Disconnect()
-                AntiAFK_Connection = nil
+            local function enableAntiAFK()
+                player.Idled:Connect(function()
+                    game:GetService("VirtualUser"):Button2Down(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
+                    task.wait(1)
+                    game:GetService("VirtualUser"):Button2Up(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
+                end)
             end
 
+            enableAntiAFK()
+            player.CharacterAdded:Connect(enableAntiAFK)
+
             Rayfield:Notify({
                 Title = "Anti-AFK",
-                Content = "❌ Desactivado",
+                Content = "Activado correctamente.",
+                Duration = 6
+            })
+        else
+            Rayfield:Notify({
+                Title = "Anti-AFK",
+                Content = "Desactivado.",
                 Duration = 6
             })
         end
-    end
+    end,
 })
 
 
 
 SettingTab:CreateButton({
-    Name = "🔥 Dispara tus FPS",
+    Name = "🚀 Dispara tus FPS (Ultra Boost)",
     Callback = function()
-
-        local decalsyeeted = true
         local g = game
         local w = g.Workspace
         local l = g.Lighting
-        local t = w.Terrain
+        local t = w:FindFirstChildOfClass("Terrain")
 
         if t then
             t.WaterWaveSize = 0
             t.WaterWaveSpeed = 0
             t.WaterReflectance = 0
             t.WaterTransparency = 0
-            t:Clear()
+            t:Clear() -- elimina terreno = máximo aumento de fps
         end
 
         l.GlobalShadows = false
         l.FogEnd = 9e9
         l.Brightness = 0
 
-        pcall(function()
-            settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
-        end)
+        settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
 
-        for i, v in pairs(g:GetDescendants()) do
-            if v:IsA("BasePart") or v:IsA("Union") or v:IsA("CornerWedgePart") or v:IsA("TrussPart") then
+        -- Optimiza todas las partes
+        for _, v in pairs(w:GetDescendants()) do
+            if v:IsA("BasePart") then
                 v.Material = Enum.Material.Plastic
                 v.Reflectance = 0
-            elseif v:IsA("Decal") or v:IsA("Texture") and decalsyeeted then
+            elseif v:IsA("Decal") or v:IsA("Texture") then
                 v.Transparency = 1
             elseif v:IsA("ParticleEmitter") or v:IsA("Trail") then
                 v.Lifetime = NumberRange.new(0)
-            elseif v:IsA("Explosion") then
-                v.BlastPressure = 1
-                v.BlastRadius = 1
-            elseif v:IsA("Fire") or v:IsA("SpotLight") or v:IsA("Smoke") then
+            elseif v:IsA("Fire") or v:IsA("Smoke") or v:IsA("Sparkles") then
                 v.Enabled = false
-            elseif v:IsA("MeshPart") then
-                v.Material = Enum.Material.Plastic
-                v.Reflectance = 0
-                v.TextureID = 10385902758728957
             end
         end
 
-        for i, e in pairs(l:GetChildren()) do
-            if e:IsA("BlurEffect") or e:IsA("SunRaysEffect") or e:IsA("ColorCorrectionEffect") 
-            or e:IsA("BloomEffect") or e:IsA("DepthOfFieldEffect") then
+        -- Apaga efectos
+        for _, e in pairs(l:GetChildren()) do
+            if e:IsA("BlurEffect") or e:IsA("SunRaysEffect") or e:IsA("BloomEffect")
+            or e:IsA("ColorCorrectionEffect") or e:IsA("DepthOfFieldEffect") then
                 e.Enabled = false
             end
         end
-    end
-})
 
+        workspace.DescendantAdded:Connect(function(v)
+            if v:IsA("Smoke") or v:IsA("Fire") or v:IsA("Sparkles") or v:IsA("ForceField") then
+                v:Destroy()
+            end
+        end)
 
--
-
-local function antilag()
-    local Lighting = game:GetService("Lighting")
-    local Terrain = game:GetService("Workspace"):FindFirstChildOfClass("Terrain")
-
-    if Terrain then
-        Terrain.WaterWaveSize = 0
-        Terrain.WaterWaveSpeed = 0
-        Terrain.WaterReflectance = 0
-        Terrain.WaterTransparency = 0
-    end
-
-    Lighting.GlobalShadows = false
-    Lighting.FogEnd = 9e9
-    Lighting.Brightness = 0
-
-    pcall(function()
-        settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
-    end)
-
-    for _, v in pairs(workspace:GetDescendants()) do
-        if v:IsA("BasePart") and not v:IsA("MeshPart") then
-            v.Material = Enum.Material.Plastic
-            v.Reflectance = 0
-        elseif v:IsA("Decal") then
-            v.Transparency = 1
-        elseif v:IsA("ParticleEmitter") or v:IsA("Trail") then
-            v.Lifetime = NumberRange.new(0)
-        elseif v:IsA("Explosion") then
-            v.BlastPressure = 0
-            v.BlastRadius = 0
-        end
-    end
-
-    for _, v in pairs(Lighting:GetChildren()) do
-        if v:IsA("BlurEffect") or v:IsA("SunRaysEffect") or v:IsA("ColorCorrectionEffect") 
-        or v:IsA("BloomEffect") or v:IsA("DepthOfFieldEffect") then
-            v.Enabled = false
-        end
-    end
-
-    workspace.DescendantAdded:Connect(function(v)
-        if v:IsA("ForceField") or v:IsA("Sparkles") or v:IsA("Smoke") or v:IsA("Fire") then
-            v:Destroy()
-        end
-    end)
-end
-
-SettingTab:CreateButton({
-    Name = " Anti-Lag ULTRA",
-    Callback = function()
-        antilag()
-    end
+        Rayfield:Notify({
+            Title = "🔥 FPS Boost",
+            Content = "FPS Disparados ✔ Ultra Optimización aplicada",
+            Duration = 6
+        })
+    end,
 })
 
 
 
-
 SettingTab:CreateButton({
-    Name = " Rejoin",
+    Name = "Rejoin",
     Callback = function()
         loadstring(game:HttpGet("https://pastebin.com/raw/1gtVMUz3"))()
-    end
+    end,
 })
 
 
-
-
 SettingTab:CreateButton({
-    Name = " Infinite Yield",
+    Name = "Inf Yield",
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
-    end
+    end,
 })
