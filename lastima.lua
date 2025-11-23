@@ -893,9 +893,9 @@ SettingTab:CreateButton({
     end,
 })
 
-
 SettingTab:CreateButton({
     Name = "Inf Yield",
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
-    end,
+    end
+})
