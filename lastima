@@ -111,8 +111,8 @@ for _, amount in ipairs(upgradeAmounts) do
 end
 
 -- Farm Tab
-local TargetTab = Window:CreateTab("Kill player", nil) 
-local TargetSection = TargetTab:CreateSection("Kill player")
+local TargetTab = Window:CreateTab("Player", nil) 
+local TargetSection = TargetTab:CreateSection("Acciones del jugador")
 
 -- Name Esp Button
 -- Function to get the player list
@@ -288,7 +288,7 @@ local noclipConnection = nil
 })
 
 -- Rapid Punch----------------------------------------------------------------------------------------------------
-local Main4Tab = Window:CreateTab("Kill 💀", nil) 
+local Main4Tab = Window:CreateTab("KIll", nil) 
 local Main4Section = Main4Tab:CreateSection("Kil")
 
 local Label = Main4Tab:CreateLabel("---- KILL AURA UI ----")
