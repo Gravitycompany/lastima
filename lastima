@@ -751,7 +751,7 @@ local SettingSection = SettingTab:CreateSection("Opciones")
 
 local AntiAFK_Enabled = false
 SettingTab:CreateButton({
-    Name = "Anti-AFK (Toggle)",
+    Name = "Anti-AFK ",
     Callback = function()
         AntiAFK_Enabled = not AntiAFK_Enabled
 
@@ -787,7 +787,7 @@ SettingTab:CreateButton({
 
 
 SettingTab:CreateButton({
-    Name = "🚀 Dispara tus FPS (Ultra Boost)",
+    Name = " Dispara tus FPS (Ultra Boost)",
     Callback = function()
         local g = game
         local w = g.Workspace
