@@ -747,90 +747,155 @@ createFarmToggle("FARM ZONE #3 [3]", 3000, 97, 900)
 local SettingTab = Window:CreateTab("Setting", nil) 
 local SettingSection = SettingTab:CreateSection("Setting")
 
--- 🔘 Botón Anti-AFK
-local AntiAFK_Enabled = false
-
-local AntiAFKButton = SettingTab:CreateButton({
-    Name = "Anti-AFK (Activar/Desactivar)",
+------------------------------------------------------------
+-- 🔥 DISPARA TUS FPS (FPS BOOST ULTRA)
+------------------------------------------------------------
+SettingTab:CreateButton({
+    Name = "🔥 Dispara tus FPS",
     Callback = function()
-        AntiAFK_Enabled = not AntiAFK_Enabled -- alternar estado manualmente
 
-        if AntiAFK_Enabled then
-            local player = game:GetService("Players").LocalPlayer
+        local decalsyeeted = true
+        local g = game
+        local w = g.Workspace
+        local l = g.Lighting
+        local t = w.Terrain
 
-            local function connectAntiAFK()
-                player.Idled:Connect(function()
-                    local vu = game:GetService("VirtualUser")
-                    vu:Button2Down(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
-                    task.wait(1)
-                    vu:Button2Up(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
-                end)
-            end
-
-            connectAntiAFK()
-            player.CharacterAdded:Connect(connectAntiAFK)
-
-            game.StarterGui:SetCore("SendNotification",{
-                Title = "Anti-AFK",
-                Text = "✅ Activado (Persistente)",
-                Duration = 8
-            })
-        else
-            game.StarterGui:SetCore("SendNotification",{
-                Title = "Anti-AFK",
-                Text = "❌ Desactivado",
-                Duration = 8
-            })
+        -- Terreno
+        if t then
+            t.WaterWaveSize = 0
+            t.WaterWaveSpeed = 0
+            t.WaterReflectance = 0
+            t.WaterTransparency = 0
+            t:Clear()
         end
-    end,
-})
 
--- 🔘 Botón Anti-Lag ULTRA
-local AntiLagButton = SettingTab:CreateButton({
-    Name = "Anti-Lag ULTRA",
-    Callback = function()
-        for i, v in pairs(workspace:GetDescendants()) do
-            if v:IsA("BasePart") then
-                v.Material = Enum.Material.SmoothPlastic
+        -- Lighting
+        l.GlobalShadows = false
+        l.FogEnd = 9e9
+        l.Brightness = 0
+
+        -- Calidad mínima
+        pcall(function()
+            settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
+        end)
+
+        -- Remover edificios si existen
+        if w:FindFirstChild("City") then
+            if w.City:FindFirstChild("Buildings") then
+                w.City.Buildings:Destroy()
+            end
+        end
+
+        -- Optimización general
+        for i, v in pairs(g:GetDescendants()) do
+            if v:IsA("Part") or v:IsA("Union") or v:IsA("CornerWedgePart") or v:IsA("TrussPart") then
+                v.Material = Enum.Material.Plastic
                 v.Reflectance = 0
-                if v:IsA("MeshPart") then
-                    v.TextureID = "" -- quita texturas de MeshParts
-                end
-            elseif v:IsA("Decal") or v:IsA("Texture") then
-                v:Destroy()
-            elseif v:IsA("ParticleEmitter") or v:IsA("Fire") or v:IsA("Smoke") or v:IsA("Sparkles") or v:IsA("Explosion") then
-                v:Destroy()
-            elseif v:IsA("Trail") then
-                v:Destroy()
+            elseif v:IsA("Decal") or v:IsA("Texture") and decalsyeeted then
+                v.Transparency = 1
+            elseif v:IsA("ParticleEmitter") or v:IsA("Trail") then
+                v.Lifetime = NumberRange.new(0)
+            elseif v:IsA("Explosion") then
+                v.BlastPressure = 1
+                v.BlastRadius = 1
+            elseif v:IsA("Fire") or v:IsA("SpotLight") or v:IsA("Smoke") then
+                v.Enabled = false
+            elseif v:IsA("MeshPart") then
+                v.Material = Enum.Material.Plastic
+                v.Reflectance = 0
+                v.TextureID = 10385902758728957
             end
         end
 
-        -- ⚙️ Lighting optimizado
-        local Lighting = game:GetService("Lighting")
-        Lighting.GlobalShadows = false
-        Lighting.FogEnd = 1e6
-        Lighting.Brightness = 1
-        Lighting.OutdoorAmbient = Color3.fromRGB(128, 128, 128)
-        Lighting.EnvironmentDiffuseScale = 0
-        Lighting.EnvironmentSpecularScale = 0
-
-        -- 👤 Limpieza de efectos del jugador
-        local player = game.Players.LocalPlayer
-        if player and player.Character then
-            for _, obj in pairs(player.Character:GetDescendants()) do
-                if obj:IsA("Trail") or obj:IsA("ParticleEmitter") or obj:IsA("Fire") or obj:IsA("Smoke") then
-                    obj:Destroy()
-                end
+        -- Efectos visuales OFF
+        for i, e in pairs(l:GetChildren()) do
+            if e:IsA("BlurEffect") or e:IsA("SunRaysEffect") or e:IsA("ColorCorrectionEffect") 
+            or e:IsA("BloomEffect") or e:IsA("DepthOfFieldEffect") then
+                e.Enabled = false
             end
         end
 
-        -- 💬 Aviso en el chat
-        game.StarterGui:SetCore("ChatMakeSystemMessage", {
-            Text = "✅ AntiLag ULTRA activado: Máximo rendimiento",
-            Color = Color3.fromRGB(0, 255, 0),
-            Font = Enum.Font.SourceSansBold,
-            FontSize = Enum.FontSize.Size18
-        })
-    end,
+        print("🔥 FPS Boost Activado")
+    end
 })
 
+
+------------------------------------------------------------
+-- ⚡ ANTILAG ULTRA
+------------------------------------------------------------
+local function antilag()
+    local Lighting = game:GetService("Lighting")
+    local Terrain = game:GetService("Workspace"):FindFirstChildOfClass("Terrain")
+
+    if Terrain then
+        Terrain.WaterWaveSize = 0
+        Terrain.WaterWaveSpeed = 0
+        Terrain.WaterReflectance = 0
+        Terrain.WaterTransparency = 0
+    end
+
+    Lighting.GlobalShadows = false
+    Lighting.FogEnd = 9e9
+    Lighting.Brightness = 0
+
+    pcall(function()
+        settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
+    end)
+
+    for _, v in pairs(workspace:GetDescendants()) do
+        if v:IsA("BasePart") and not v:IsA("MeshPart") then
+            v.Material = Enum.Material.Plastic
+            v.Reflectance = 0
+        elseif v:IsA("Decal") then
+            v.Transparency = 1
+        elseif v:IsA("ParticleEmitter") or v:IsA("Trail") then
+            v.Lifetime = NumberRange.new(0)
+        elseif v:IsA("Explosion") then
+            v.BlastPressure = 0
+            v.BlastRadius = 0
+        end
+    end
+
+    for _, v in pairs(Lighting:GetChildren()) do
+        if v:IsA("BlurEffect") or v:IsA("SunRaysEffect") or v:IsA("ColorCorrectionEffect") 
+        or v:IsA("BloomEffect") or v:IsA("DepthOfFieldEffect") then
+            v.Enabled = false
+        end
+    end
+
+    workspace.DescendantAdded:Connect(function(v)
+        if v:IsA("ForceField") or v:IsA("Sparkles") or v:IsA("Smoke") or v:IsA("Fire") then
+            v:Destroy()
+        end
+    end)
+end
+
+SettingTab:CreateButton({
+    Name = "⚡ Anti-Lag ULTRA",
+    Callback = function()
+        antilag()
+        print("⚡ AntiLag Activado")
+    end
+})
+
+
+------------------------------------------------------------
+-- 🔄 BOTÓN REJOIN
+------------------------------------------------------------
+SettingTab:CreateButton({
+    Name = "🔄 Rejoin",
+    Callback = function()
+        loadstring(game:HttpGet("https://pastebin.com/raw/1gtVMUz3"))()
+    end
+})
+
+
+------------------------------------------------------------
+-- ♾️ BOTÓN INFINITE YIELD
+------------------------------------------------------------
+SettingTab:CreateButton({
+    Name = "♾️ Infinite Yield",
+    Callback = function()
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+    end,
+})
