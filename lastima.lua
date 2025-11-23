@@ -884,62 +884,6 @@ SettingTab:CreateButton({
     end,
 })
 
-local SettingTab = Window:CreateTab("⚙ Optimización")
-
-SettingTab:CreateButton({
-    Name = "🔥 Dispara tus FPS (Ultra Optimización)",
-    Callback = function()
-        -- Limpiar basura
-        collectgarbage("collect")
-
-        -- Bajar gráficos
-        pcall(function()
-            settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
-        end)
-
-        -- Apagar partículas
-        for _, v in workspace:GetDescendants() do
-            if v:IsA("ParticleEmitter") or v:IsA("Trail") or v:IsA("Fire") or v:IsA("Smoke") then
-                v.Enabled = false
-            end
-        end
-
-        -- Desactivar sombras
-        game.Lighting.GlobalShadows = false
-        game.Lighting.FogEnd = 9e9
-
-        -- Quitar texturas pesadas
-        for _, v in workspace:GetDescendants() do
-            if v:IsA("Texture") or v:IsA("Decal") then
-                v.Transparency = 1
-            end
-        end
-
-        -- Desactivar efectos de iluminación
-        for _, v in game.Lighting:GetChildren() do
-            if v:IsA("DepthOfFieldEffect")
-            or v:IsA("BloomEffect")
-            or v:IsA("ColorCorrectionEffect")
-            or v:IsA("SunRaysEffect") then
-                v.Enabled = false
-            end
-        end
-
-        -- Optimización sonido
-        pcall(function()
-            sethiddenproperty(game:GetService("UserSettings").GameSettings, "MasterVolume", 0)
-        end)
-
-        -- Notificación (modo Rayfield)
-        Rayfield:Notify({
-            Title = "Optimización Completa",
-            Content = "FPS al máximo 🔥",
-            Duration = 4
-        })
-    end
-})
-
-
 
 
 
