@@ -743,6 +743,59 @@ createFarmToggle("FARM ZONE #1 [1]", 650, 779, 284)
 createFarmToggle("FARM ZONE #2 [2]", -2000, 95, 300)
 createFarmToggle("FARM ZONE #3 [3]", 3000, 97, 900)
 
+-- Setting Tab
+local SettingTab = Window:CreateTab("Setting", nil) 
+local SettingSection = SettingTab:CreateSection("Setting")
+
+-- 🔘 Botón Anti-AFK
+local AntiAFK_Enabled = false
+local AntiAFK_Connection = nil
+
+local AntiAFKButton = SettingTab:CreateButton({
+    Name = "Anti-AFK (Activar/Desactivar)",
+    Callback = function()
+        AntiAFK_Enabled = not AntiAFK_Enabled -- alternar estado
+
+        local player = game:GetService("Players").LocalPlayer
+        local vu = game:GetService("VirtualUser")
+
+        if AntiAFK_Enabled then
+            
+            -- Si ya existe una conexión, elimínala
+            if AntiAFK_Connection then
+                AntiAFK_Connection:Disconnect()
+            end
+
+            -- Crear Anti-AFK
+            AntiAFK_Connection = player.Idled:Connect(function()
+                vu:Button2Down(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
+                task.wait(1)
+                vu:Button2Up(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
+            end)
+
+            -- Notificación ON
+            game.StarterGui:SetCore("SendNotification",{
+                Title = "Anti-AFK",
+                Text = "✅ Activado (Siempre On)",
+                Duration = 8
+            })
+
+        else
+            -- Apagar Anti-AFK
+            if AntiAFK_Connection then
+                AntiAFK_Connection:Disconnect()
+                AntiAFK_Connection = nil
+            end
+
+            -- Notificación OFF
+            game.StarterGui:SetCore("SendNotification",{
+                Title = "Anti-AFK",
+                Text = "❌ Desactivado",
+                Duration = 8
+            })
+        end
+    end,
+})
 
 
 ------------------------------------------------------------
