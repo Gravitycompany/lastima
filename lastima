@@ -444,7 +444,99 @@ task.spawn(function()
 end)
    end,
 })
+local Label = Main4Tab:CreateLabel("---- KillAura Sección ----")
 
+-- Kill Aura (SOFT)
+local SoftToggle = Main4Tab:CreateToggle({
+   Name = "Kill Aura (SOFT)",
+   CurrentValue = false,
+   Flag = "KillAuraSoft",
+   Callback = function(state)
+      if state then
+         getgenv().attackPlayer = true
+         local player = game.Players.LocalPlayer
+         local humanoidRootPart = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+         if humanoidRootPart then
+            task.spawn(function()
+               while getgenv().attackPlayer do
+                  for i = 1, 25 do
+                     game:GetService("ReplicatedStorage").Events.Punch:FireServer(0, 0.1, 1)
+                     task.wait(0.05) -- 🔥 Antes 0.45 → ahora 0.05 (mucho más rápido)
+                  end
+                  task.wait(0.1) -- 🔥 Antes 0.5
+               end
+            end)
+         end
+      else
+         getgenv().attackPlayer = false
+      end
+   end,
+})
+
+-- Kill Aura (HEAVY)
+local HeavyToggle = Main4Tab:CreateToggle({
+   Name = "Kill Aura (HEAVY)",
+   CurrentValue = false,
+   Flag = "KillAuraHeavy",
+   Callback = function(state)
+      if state then
+         getgenv().attackPlayer = true
+         local player = game.Players.LocalPlayer
+         local humanoidRootPart = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+         if humanoidRootPart then
+            task.spawn(function()
+               while getgenv().attackPlayer do
+                  for i = 1, 25 do
+                     game:GetService("ReplicatedStorage").Events.Punch:FireServer(0.4, 0.1, 1)
+                     task.wait(0.06) -- 🔥 Antes 0.4 → ahora 0.06
+                  end
+                  task.wait(0.15)
+               end
+            end)
+         end
+      else
+         getgenv().attackPlayer = false
+      end
+   end,
+})
+
+-- Kill Aura (MIX)
+local MixToggle = Main4Tab:CreateToggle({
+   Name = "Kill Aura (MIX)",
+   CurrentValue = false,
+   Flag = "KillAuraMix",
+   Callback = function(state)
+      if state then
+         getgenv().attackPlayer = true
+         local player = game.Players.LocalPlayer
+         local humanoidRootPart = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+         if humanoidRootPart then
+            -- Primer hilo (ataque suave)
+            task.spawn(function()
+               while getgenv().attackPlayer do
+                  for i = 1, 30 do
+                     game:GetService("ReplicatedStorage").Events.Punch:FireServer(0, 0.1, 1)
+                     task.wait(0.05)
+                  end
+                  task.wait(0.2)
+               end
+            end)
+            -- Segundo hilo (ataque fuerte)
+            task.spawn(function()
+               while getgenv().attackPlayer do
+                  for i = 1, 25 do
+                     game:GetService("ReplicatedStorage").Events.Punch:FireServer(0.4, 0.1, 1)
+                     task.wait(0.05)
+                  end
+                  task.wait(0.2)
+               end
+            end)
+         end
+      else
+         getgenv().attackPlayer = false
+      end
+   end,
+})
 
 -- Label que ya tienes
 local Label = Main4Tab:CreateLabel("---- cylindrical ----")
