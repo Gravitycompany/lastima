@@ -111,8 +111,8 @@ for _, amount in ipairs(upgradeAmounts) do
 end
 
 -- Farm Tab
-local TargetTab = Window:CreateTab("Player ", nil) 
-local TargetSection = TargetTab:CreateSection("Seccio del jugador")
+local TargetTab = Window:CreateTab("Kill player", nil) 
+local TargetSection = TargetTab:CreateSection("Kill player")
 
 -- Name Esp Button
 -- Function to get the player list
@@ -206,6 +206,46 @@ local LoopGotoToggle = TargetTab:CreateToggle({
         end
     end,
 })
+
+
+local LaserToggle = TargetTab:CreateToggle({
+    Name = "Laser",
+    CurrentValue = false,
+    Flag = "LaserToggle",
+    Callback = function(state)
+        if state then
+            getgenv().LaserL = true
+
+            spawn(function()
+                wait()
+
+                local event = game:GetService("ReplicatedStorage").Events.ToggleLaserVision
+                local part
+
+                pcall(function()
+                    part = event:InvokeServer(true)
+                end)
+
+                while getgenv().LaserL and part and _G.tplayer do
+                    wait()
+
+                    local targetPlayer = game.Players:FindFirstChild(_G.tplayer)
+
+                    if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                        part.Position = targetPlayer.Character.HumanoidRootPart.Position
+                    end
+                end
+
+                pcall(function()
+                    event:InvokeServer(false)
+                end)
+            end)
+        else
+            getgenv().LaserL = false
+        end
+    end
+})
+
 
 _G.NOCLIP = false
 local noclipConnection = nil
