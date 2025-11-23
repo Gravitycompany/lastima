@@ -743,11 +743,18 @@ createFarmToggle("FARM ZONE #1 [1]", 650, 779, 284)
 createFarmToggle("FARM ZONE #2 [2]", -2000, 95, 300)
 createFarmToggle("FARM ZONE #3 [3]", 3000, 97, 900)
 
--- 🛠️ Setting Tab
+------------------------------------------------------------
+-- 🧪 SETTINGS TAB
+------------------------------------------------------------
+
 local SettingTab = Window:CreateTab("Setting", nil)
 local SettingSection = SettingTab:CreateSection("Opciones")
 
--- 🔘 Anti-AFK REAL PARA KAVO
+
+------------------------------------------------------------
+-- 🔘 ANTI-AFK REAL PARA KAVO
+------------------------------------------------------------
+
 local AntiAFK_Enabled = false
 local AntiAFK_Connection = nil
 
@@ -760,10 +767,7 @@ SettingSection:CreateButton({
         local vu = game:GetService("VirtualUser")
 
         if AntiAFK_Enabled then
-
-            if AntiAFK_Connection then
-                AntiAFK_Connection:Disconnect()
-            end
+            if AntiAFK_Connection then AntiAFK_Connection:Disconnect() end
 
             AntiAFK_Connection = player.Idled:Connect(function()
                 vu:Button2Down(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
@@ -771,34 +775,32 @@ SettingSection:CreateButton({
                 vu:Button2Up(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
             end)
 
-            game.StarterGui:SetCore("SendNotification", {
+            game.StarterGui:SetCore("SendNotification",{
                 Title = "Anti-AFK",
                 Text = "✅ Activado",
                 Duration = 6
             })
 
         else
-
             if AntiAFK_Connection then
                 AntiAFK_Connection:Disconnect()
                 AntiAFK_Connection = nil
             end
 
-            game.StarterGui:SetCore("SendNotification", {
+            game.StarterGui:SetCore("SendNotification",{
                 Title = "Anti-AFK",
                 Text = "❌ Desactivado",
                 Duration = 6
             })
-
         end
     end
 })
 
 
-
 ------------------------------------------------------------
 -- 🔥 DISPARA TUS FPS (FPS BOOST ULTRA)
 ------------------------------------------------------------
+
 SettingTab:CreateButton({
     Name = "🔥 Dispara tus FPS",
     Callback = function()
@@ -809,7 +811,6 @@ SettingTab:CreateButton({
         local l = g.Lighting
         local t = w.Terrain
 
-        -- Terreno
         if t then
             t.WaterWaveSize = 0
             t.WaterWaveSpeed = 0
@@ -818,24 +819,20 @@ SettingTab:CreateButton({
             t:Clear()
         end
 
-        -- Lighting
         l.GlobalShadows = false
         l.FogEnd = 9e9
         l.Brightness = 0
 
-        -- Calidad mínima
         pcall(function()
             settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
         end)
 
-        -- Remover edificios si existen
         if w:FindFirstChild("City") then
             if w.City:FindFirstChild("Buildings") then
                 w.City.Buildings:Destroy()
             end
         end
 
-        -- Optimización general
         for i, v in pairs(g:GetDescendants()) do
             if v:IsA("Part") or v:IsA("Union") or v:IsA("CornerWedgePart") or v:IsA("TrussPart") then
                 v.Material = Enum.Material.Plastic
@@ -856,7 +853,6 @@ SettingTab:CreateButton({
             end
         end
 
-        -- Efectos visuales OFF
         for i, e in pairs(l:GetChildren()) do
             if e:IsA("BlurEffect") or e:IsA("SunRaysEffect") or e:IsA("ColorCorrectionEffect") 
             or e:IsA("BloomEffect") or e:IsA("DepthOfFieldEffect") then
@@ -870,8 +866,9 @@ SettingTab:CreateButton({
 
 
 ------------------------------------------------------------
--- ⚡ ANTILAG ULTRA
+-- ⚡ ANTI-LAG ULTRA
 ------------------------------------------------------------
+
 local function antilag()
     local Lighting = game:GetService("Lighting")
     local Terrain = game:GetService("Workspace"):FindFirstChildOfClass("Terrain")
@@ -929,8 +926,9 @@ SettingTab:CreateButton({
 
 
 ------------------------------------------------------------
--- 🔄 BOTÓN REJOIN
+-- 🔄 REJOIN
 ------------------------------------------------------------
+
 SettingTab:CreateButton({
     Name = "🔄 Rejoin",
     Callback = function()
@@ -940,11 +938,12 @@ SettingTab:CreateButton({
 
 
 ------------------------------------------------------------
--- ♾️ BOTÓN INFINITE YIELD
+-- ♾️ INFINITE YIELD
 ------------------------------------------------------------
+
 SettingTab:CreateButton({
     Name = "♾️ Infinite Yield",
     Callback = function()
-        loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
-    end,
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
+    end
 })
