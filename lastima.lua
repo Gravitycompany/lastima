@@ -884,71 +884,6 @@ SettingTab:CreateButton({
     end,
 })
 
-SettingTab:CreateButton({
-    Name = "⚡ Acelera tus FPS (Ultra Boost REAL)",
-    Callback = function()
-        -- Limpia RAM
-        for i = 1, 5 do collectgarbage("collect") end
-
-        -- Baja gráficos agresivamente
-        pcall(function()
-            settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
-        end)
-
-        -- Apaga efectos pesados
-        for _, v in ipairs(workspace:GetDescendants()) do
-            if v:IsA("ParticleEmitter")
-            or v:IsA("Trail")
-            or v:IsA("Smoke")
-            or v:IsA("Fire")
-            or v:IsA("Sparkles") then
-                v.Enabled = false
-            end
-        end
-
-        -- Iluminación suave
-        game.Lighting.GlobalShadows = false
-        game.Lighting.Brightness = 1
-        game.Lighting.FogEnd = 999999
-
-        -- Desactivar post-procesos
-        for _, v in ipairs(game.Lighting:GetChildren()) do
-            if v:IsA("DepthOfFieldEffect")
-            or v:IsA("BloomEffect")
-            or v:IsA("SunRaysEffect")
-            or v:IsA("ColorCorrectionEffect")
-            or v:IsA("BlurEffect") then
-                v.Enabled = false
-            end
-        end
-
-        -- Quitar texturas pesadas
-        for _, v in ipairs(workspace:GetDescendants()) do
-            if v:IsA("Texture") or v:IsA("Decal") then
-                v.Transparency = 1
-            end
-        end
-
-        -- Reduce volumen para ahorrar CPU
-        pcall(function()
-            sethiddenproperty(game:GetService("UserSettings").GameSettings, "MasterVolume", 0)
-        end)
-
-        -- Reduce render de sombras y reflejos
-        pcall(function()
-            workspace.CascadedShadows = false
-            workspace.GlobalWind = Vector3.new(0,0,0)
-        end)
-
-        -- Mensaje épico
-        Rayfield:Notify({
-            Title = "FPS Boost",
-            Content = "Tu PC anda como avioncito ✈🔥",
-            Duration = 5
-        })
-    end
-})
-
 
 
 SettingTab:CreateButton({
@@ -964,78 +899,114 @@ SettingTab:CreateButton({
         loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
     end
 })
-local Tab = Window:CreateTab("Optimización", 4483362458)
-local Section = Tab:CreateSection("AntiLag Ultra")
+local OPTI = Window:CreateTab("OPTI", 4483362458)
+local SectionMain = OPTI:CreateSection("🔥 Optimización Principal")
+local SectionExtra = OPTI:CreateSection("⚙️ Optimización Extra")
+local SectionOther = OPTI:CreateSection("🧹 Limpieza & Sistemas")
+-- Palabras permitidas en AntiLag Ultra
+local allowed = {
+    "base","floor","terrain","road","street","building","house",
+    "wall","spawn","bridge","main","central","ground","platform"
+}
 
---// FUNCION ANTILAG ULTRA
-function AntiLagUltra()
-    local player = game.Players.LocalPlayer
-    local character = player.Character or player.CharacterAdded:Wait()
-
-    -- listas permitidas
-    local allowed = {
-        "Baseplate",
-        "Terrain",
-        "Road",
-        "Street",
-        "Floor",
-        "Bridge",
-        "Building",
-        "Wall",
-        "House",
-        "Main",
-        "Spawn",
-        "RoadLine"
-    }
-
-    local function isAllowed(obj)
-        for _, word in pairs(allowed) do
-            if string.find(obj.Name:lower(), word:lower()) then
-                return true
-            end
+local function isAllowed(obj)
+    for _, w in ipairs(allowed) do
+        if string.find(obj.Name:lower(), w) then
+            return true
         end
-        return false
     end
+    return false
+end
 
-    -- Eliminar cosas pesadas
+-- 🔥 ULTRA
+local function AntiLagUltra()
     for _, obj in pairs(workspace:GetDescendants()) do
-        if obj:IsA("Part") or obj:IsA("MeshPart") or obj:IsA("UnionOperation") or obj:IsA("Model") then
+        
+        if obj:IsA("Model") or obj:IsA("Part") or obj:IsA("MeshPart") or obj:IsA("UnionOperation") then
             if not isAllowed(obj) then
                 pcall(function() obj:Destroy() end)
             end
         end
+
         if obj:IsA("Decal") or obj:IsA("Texture") then
             pcall(function() obj:Destroy() end)
         end
-        if obj:IsA("ParticleEmitter") or obj:IsA("Trail") or obj:IsA("Fire") or obj:IsA("Smoke") then
+        
+        if obj:IsA("ParticleEmitter") or obj:IsA("Smoke") or obj:IsA("Fire") or obj:IsA("Trail") then
             pcall(function() obj:Destroy() end)
         end
     end
 
-    -- Mejorar FPS
     settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
     game.Lighting.GlobalShadows = false
-    game.Lighting.FogEnd = 9e9
-    game.Lighting.FogStart = 9e9
-    sethiddenproperty(game.Lighting, "Technology", Enum.Technology.Compatibility)
+    game.Lighting.FogEnd = 9999999
+end
 
-    -- Desactivar efectos visuales del jugador
-    for _, v in pairs(character:GetDescendants()) do
-        if v:IsA("ParticleEmitter") or v:IsA("Trail") then
+-- 🌿 Vegetación
+local function RemoveVeg()
+    for _, v in pairs(workspace:GetDescendants()) do
+        local name = v.Name:lower()
+        if name:find("tree") or name:find("grass") or name:find("leaf") or name:find("plant") then
+            pcall(function() v:Destroy() end)
+        end
+    end
+end
+
+-- 💨 Partículas
+local function RemoveParticles()
+    for _, v in pairs(workspace:GetDescendants()) do
+        if v:IsA("ParticleEmitter") or v:IsA("Trail") or v:IsA("Smoke") or v:IsA("Fire") then
             v.Enabled = false
         end
     end
 end
 
---// BOTÓN
-Section:CreateButton({
-    Name = "Activar Anti-Lag Ultra",
-    Callback = function()
-        AntiLagUltra()
-        Rayfield:Notify({
-            Title = "AntiLag Activado",
-            Content = "Se eliminaron objetos pesados y optimizado FPS.",
-            Duration = 5
-        })
-    end,
-})
+-- 🟦 Texturas
+local function RemoveTextures()
+    for _, v in pairs(workspace:GetDescendants()) do
+        if v:IsA("Texture") or v:IsA("Decal") then
+            v.Transparency = 1
+        end
+    end
+end
+
+-- 🤏 Suave
+local function AntiLagSoft()
+    settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
+    game.Lighting.GlobalShadows = false
+end
+
+-- ⚡ Boost FPS
+local function FPSBoost()
+    settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
+    workspace.StreamingEnabled = true
+    game.Lighting.GlobalShadows = false
+    
+    for _, v in pairs(game.Lighting:GetChildren()) do
+        if v:IsA("DepthOfFieldEffect")
+        or v:IsA("BloomEffect")
+        or v:IsA("SunRaysEffect")
+        or v:IsA("ColorCorrectionEffect") then
+            v.Enabled = false
+        end
+    end
+end
+
+-- 🎮 Competitivo
+local function CompetitiveMode()
+    settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
+    RemoveTextures()
+    RemoveParticles()
+    game.Lighting.GlobalShadows = false
+end
+
+-- 🌑 Minimalista
+local function MinimalistMode()
+    game.Lighting.GlobalShadows = false
+    RemoveParticles()
+end
+
+-- 🧹 RAM Cleaner
+local function ClearRAM()
+    collectgarbage("collect")
+end
