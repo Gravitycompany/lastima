@@ -885,7 +885,7 @@ SettingTab:CreateButton({
 })
 
 SettingTab:CreateButton({
-    Name = "⚡ Anti-Lag Ultra (Seguro)",
+    Name = " Anti-Lag Ultra (Seguro)",
     Callback = function()
 
         -- Whitelist de objetos importantes
