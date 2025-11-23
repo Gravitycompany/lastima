@@ -884,38 +884,39 @@ SettingTab:CreateButton({
     end,
 })
 
+local SettingTab = Window:CreateTab("⚙ Optimización")
+
 SettingTab:CreateButton({
     Name = "🔥 Dispara tus FPS (Ultra Optimización)",
     Callback = function()
         -- Limpiar basura
         collectgarbage("collect")
 
-        -- Bajar gráficos al mínimo
-        local s = settings()
+        -- Bajar gráficos
         pcall(function()
-            s.Rendering.QualityLevel = Enum.QualityLevel.Level01
+            settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
         end)
 
-        -- Desactivar efectos innecesarios
-        for _, v in pairs(workspace:GetDescendants()) do
+        -- Apagar partículas
+        for _, v in workspace:GetDescendants() do
             if v:IsA("ParticleEmitter") or v:IsA("Trail") or v:IsA("Fire") or v:IsA("Smoke") then
                 v.Enabled = false
             end
         end
 
-        -- Reducir sombras
+        -- Desactivar sombras
         game.Lighting.GlobalShadows = false
         game.Lighting.FogEnd = 9e9
 
-        -- Desactivar texturas pesadas
-        for _, v in pairs(workspace:GetDescendants()) do
+        -- Quitar texturas pesadas
+        for _, v in workspace:GetDescendants() do
             if v:IsA("Texture") or v:IsA("Decal") then
                 v.Transparency = 1
             end
         end
 
-        -- Desactivar PostProcessing
-        for _, v in pairs(game.Lighting:GetChildren()) do
+        -- Desactivar efectos de iluminación
+        for _, v in game.Lighting:GetChildren() do
             if v:IsA("DepthOfFieldEffect")
             or v:IsA("BloomEffect")
             or v:IsA("ColorCorrectionEffect")
@@ -924,17 +925,20 @@ SettingTab:CreateButton({
             end
         end
 
-        -- Optimización extra
-        sethiddenproperty(game:GetService("UserSettings").GameSettings, "MasterVolume", 0)
+        -- Optimización sonido
+        pcall(function()
+            sethiddenproperty(game:GetService("UserSettings").GameSettings, "MasterVolume", 0)
+        end)
 
-        -- Notificación Rayfield
+        -- Notificación (modo Rayfield)
         Rayfield:Notify({
-            Title = "Optimización Activada",
+            Title = "Optimización Completa",
             Content = "FPS al máximo 🔥",
-            Duration = 3
+            Duration = 4
         })
     end
 })
+
 
 
 
