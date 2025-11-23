@@ -5,7 +5,7 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 local Window = Rayfield:CreateWindow({
    Name = "LASTIMA V!",
    Icon = 20, -- Icon in Topbar. Can use Lucide Icons (string) or Roblox Image (number). 0 to use no icon (default).
-   LoadingTitle = "GRAVEDAD0",
+   LoadingTitle = "GRAVEDAD-0",
    LoadingSubtitle = "by Papita",
    Theme = "Default", -- Check https://docs.sirius.menu/rayfield/configuration/themes
 
@@ -51,7 +51,7 @@ Rayfield:Notify({
     },
 })
 
-local StatsTab = Window:CreateTab("Auto Stats", 4483362458)
+local StatsTab = Window:CreateTab("Auto Stats ⬆️")
 local StatSection = StatsTab:CreateSection("Upgrade Settings")
 
 --  Lista de estadísticas
@@ -111,8 +111,8 @@ for _, amount in ipairs(upgradeAmounts) do
 end
 
 -- Farm Tab
-local TargetTab = Window:CreateTab("Kill player", nil) 
-local TargetSection = TargetTab:CreateSection("Kill player")
+local TargetTab = Window:CreateTab("Player ", nil) 
+local TargetSection = TargetTab:CreateSection("Seccio del jugador")
 
 -- Name Esp Button
 -- Function to get the player list
@@ -207,9 +207,49 @@ local LoopGotoToggle = TargetTab:CreateToggle({
     end,
 })
 
+_G.NOCLIP = false
+local noclipConnection = nil
+
+ TargetTab:CreateToggle({
+    Name = "Noclip",
+    CurrentValue = false,
+    Flag = "NoclipToggle",
+    Callback = function(Value)
+        _G.NOCLIP = Value
+
+        local player = game.Players.LocalPlayer
+        local char = player.Character or player.CharacterAdded:Wait()
+
+        if Value == true then
+            -- Activar noclip
+            noclipConnection = game:GetService("RunService").Stepped:Connect(function()
+                if _G.NOCLIP and char then
+                    for _, v in pairs(char:GetChildren()) do
+                        if v:IsA("BasePart") then
+                            v.CanCollide = false
+                        end
+                    end
+                end
+            end)
+
+        else
+            -- Desactivar noclip
+            if noclipConnection then
+                noclipConnection:Disconnect()
+                noclipConnection = nil
+            end
+            for _, v in pairs(char:GetChildren()) do
+                if v:IsA("BasePart") then
+                    v.CanCollide = true
+                end
+            end
+        end
+    end,
+})
+
 -- Rapid Punch----------------------------------------------------------------------------------------------------
-local Main4Tab = Window:CreateTab("Rapid Punch", nil) 
-local Main4Section = Main4Tab:CreateSection("Punch")
+local Main4Tab = Window:CreateTab("Kill 💀", nil) 
+local Main4Section = Main4Tab:CreateSection("Kil")
 
 local Label = Main4Tab:CreateLabel("---- KILL AURA UI ----")
 
@@ -405,10 +445,169 @@ end)
    end,
 })
 
--- Crear pestaña de Farm
-local FarmTab = Window:CreateTab("🏗️ Farm", 4483362458)
-local FarmSection = FarmTab:CreateSection("Farm Zones") -- solo visual
 
+-- Label que ya tienes
+local Label = Main4Tab:CreateLabel("---- cylindrical ----")
+
+-- Variable del rapid punch
+_G.VARIABLE = false
+
+-- Toggle dentro del mismo apartado
+local Toggle = Main4Tab:CreateToggle({
+    Name = "cylindrical-Beta",
+    CurrentValue = false,
+    Flag = "RapidPunchToggle",
+    Callback = function(Value)
+        _G.VARIABLE = Value
+    end,
+})
+
+-- Función del rapid punch
+local mouse = game:GetService("Players").LocalPlayer:GetMouse()
+
+mouse.Button1Down:Connect(function()
+    if _G.VARIABLE == true then
+        local Event = game:GetService("ReplicatedStorage").Events.Punch
+        Event:FireServer(0.4, 0.1, 1)
+    end
+end)
+
+_G.VARIABLE = false -- Rapid Punch toggle
+
+local Toggle = Main4Tab:CreateToggle({
+    Name = "cylindrical v1",
+    CurrentValue = false,
+    Flag = "RapidPunchUltraToggle",
+    Callback = function(Value)
+        _G.VARIABLE = Value
+    end,
+})
+
+local mouse = game:GetService("Players").LocalPlayer:GetMouse()
+local Event = game:GetService("ReplicatedStorage").Events.Punch
+
+mouse.Button1Down:Connect(function()
+    if _G.VARIABLE == true then
+        -- Ráfaga extrema sin lag (25 golpes por click)
+        task.spawn(function()
+            for i = 1, 25 do
+                Event:FireServer(0.4, 0.1, 1)
+                task.wait(0.01) -- ultra rápido sin romper el server
+            end
+        end)
+    end
+end)
+
+local Label = Main4Tab:CreateLabel("---- Macro ----")
+
+_G.ONEPUNCH = false
+local OnePunchTool = nil
+
+local Toggle = Main4Tab:CreateToggle({
+    Name = "Macro_1",
+    CurrentValue = false,
+    Flag = "OnePunchToggle",
+    Callback = function(Value)
+        _G.ONEPUNCH = Value
+
+        local player = game.Players.LocalPlayer
+        local backpack = player:WaitForChild("Backpack")
+
+        if Value == true then
+            -- Crear la tool
+            OnePunchTool = Instance.new("Tool")
+            OnePunchTool.Name = "Macro-x1"
+            OnePunchTool.RequiresHandle = false
+            OnePunchTool.Parent = backpack
+
+            -- Cuando clickeen con el tool
+            OnePunchTool.Activated:Connect(function()
+                if _G.ONEPUNCH then
+                    local Event = game:GetService("ReplicatedStorage").Events.Punch
+                    Event:FireServer(5, 5, 5) -- super golpe
+                end
+            end)
+
+        else
+            -- Si se apaga, borrar la tool
+            if OnePunchTool then
+                OnePunchTool:Destroy()
+                OnePunchTool = nil
+            end
+        end
+    end,
+})
+
+_G.ONEPUNCH_MACRO = false
+local OnePunchTool = nil
+local MacroLoop = nil
+
+local Toggle = Main4Tab:CreateToggle({
+    Name = "Macro_2",
+    CurrentValue = false,
+    Flag = "OnePunchMacroToggle",
+    Callback = function(Value)
+        _G.ONEPUNCH_MACRO = Value
+
+        local player = game.Players.LocalPlayer
+        local backpack = player:WaitForChild("Backpack")
+
+        if Value == true then
+            -- Crear Tool
+            OnePunchTool = Instance.new("Tool")
+            OnePunchTool.Name = "Macro x2"
+            OnePunchTool.RequiresHandle = false
+            OnePunchTool.Parent = backpack
+
+            -- Cuando el tool se equipe, iniciar el macro
+            OnePunchTool.Equipped:Connect(function()
+                if MacroLoop then
+                    MacroLoop:Disconnect()
+                end
+
+                MacroLoop = game:GetService("RunService").Heartbeat:Connect(function()
+                    if _G.ONEPUNCH_MACRO then
+                        if tick() % 2 < 0.03 then -- Cada 2 segundos
+                            local Event = game:GetService("ReplicatedStorage").Events.Punch
+                            Event:FireServer(5, 5, 5) -- SUPER GOLPE
+                        end
+                    end
+                end)
+            end)
+
+            -- Cuando se desequipe, detener macro
+            OnePunchTool.Unequipped:Connect(function()
+                if MacroLoop then
+                    MacroLoop:Disconnect()
+                    MacroLoop = nil
+                end
+            end)
+
+        else
+            -- Apagar macro y borrar tool
+            if MacroLoop then
+                MacroLoop:Disconnect()
+                MacroLoop = nil
+            end
+
+            if OnePunchTool then
+                OnePunchTool:Destroy()
+                OnePunchTool = nil
+            end
+        end
+    end,
+})
+-- Crear pestaña de Farm
+local FarmTab = Window:CreateTab(" Farm", 4483362458)
+local FarmSection = FarmTab:CreateSection("UI Spawn") -- solo visual
+
+FarmTab:CreateButton({
+    Name = "Spawn Point UI",
+    Callback = function()
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/mitselaxel-del/12214897214987/refs/heads/main/SPTR'))()
+    end,
+})
+local FarmSection = FarmTab:CreateSection("Mas")
 -- Función para crear toggles correctamente
 local function createFarmToggle(name, posX, posY, posZ)
     FarmTab:CreateToggle({  -- ✅ se llama a la pestaña, no a la sección
@@ -448,7 +647,198 @@ local function createFarmToggle(name, posX, posY, posZ)
 end
 
 -- Crear toggles
-createFarmToggle("FARM ZONE #1 [Edificio en construcción]", 650, 779, 284)
-createFarmToggle("FARM ZONE #2 [Ciudad]", 120, 50, -300)
-createFarmToggle("FARM ZONE #3 [Montaña]", -500, 200, 600)
+createFarmToggle("FARM ZONE #1 [1]", 650, 779, 284)
+createFarmToggle("FARM ZONE #2 [2]", -2000, 95, 300)
+createFarmToggle("FARM ZONE #3 [3]", 3000, 97, 900)
 
+-- Setting Tab
+local SettingTab = Window:CreateTab("Setting", nil) 
+local SettingSection = SettingTab:CreateSection("Setting")
+
+-- 🔘 Botón Anti-AFK
+local AntiAFK_Enabled = false
+
+local AntiAFKButton = SettingTab:CreateButton({
+    Name = "Anti-AFK (Activar/Desactivar)",
+    Callback = function()
+        AntiAFK_Enabled = not AntiAFK_Enabled -- alternar estado manualmente
+
+        if AntiAFK_Enabled then
+            local player = game:GetService("Players").LocalPlayer
+
+            local function connectAntiAFK()
+                player.Idled:Connect(function()
+                    local vu = game:GetService("VirtualUser")
+                    vu:Button2Down(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
+                    task.wait(1)
+                    vu:Button2Up(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
+                end)
+            end
+
+            connectAntiAFK()
+            player.CharacterAdded:Connect(connectAntiAFK)
+
+            game.StarterGui:SetCore("SendNotification",{
+                Title = "Anti-AFK",
+                Text = "✅ Activado (Persistente)",
+                Duration = 8
+            })
+        else
+            game.StarterGui:SetCore("SendNotification",{
+                Title = "Anti-AFK",
+                Text = "❌ Desactivado",
+                Duration = 8
+            })
+        end
+    end,
+})
+
+-- 🔘 Botón Anti-Lag ULTRA
+local AntiLagButton = SettingTab:CreateButton({
+    Name = "Anti-Lag ULTRA",
+    Callback = function()
+        for i, v in pairs(workspace:GetDescendants()) do
+            if v:IsA("BasePart") then
+                v.Material = Enum.Material.SmoothPlastic
+                v.Reflectance = 0
+                if v:IsA("MeshPart") then
+                    v.TextureID = "" -- quita texturas de MeshParts
+                end
+            elseif v:IsA("Decal") or v:IsA("Texture") then
+                v:Destroy()
+            elseif v:IsA("ParticleEmitter") or v:IsA("Fire") or v:IsA("Smoke") or v:IsA("Sparkles") or v:IsA("Explosion") then
+                v:Destroy()
+            elseif v:IsA("Trail") then
+                v:Destroy()
+            end
+        end
+
+        -- ⚙️ Lighting optimizado
+        local Lighting = game:GetService("Lighting")
+        Lighting.GlobalShadows = false
+        Lighting.FogEnd = 1e6
+        Lighting.Brightness = 1
+        Lighting.OutdoorAmbient = Color3.fromRGB(128, 128, 128)
+        Lighting.EnvironmentDiffuseScale = 0
+        Lighting.EnvironmentSpecularScale = 0
+
+        -- 👤 Limpieza de efectos del jugador
+        local player = game.Players.LocalPlayer
+        if player and player.Character then
+            for _, obj in pairs(player.Character:GetDescendants()) do
+                if obj:IsA("Trail") or obj:IsA("ParticleEmitter") or obj:IsA("Fire") or obj:IsA("Smoke") then
+                    obj:Destroy()
+                end
+            end
+        end
+
+        -- 💬 Aviso en el chat
+        game.StarterGui:SetCore("ChatMakeSystemMessage", {
+            Text = "✅ AntiLag ULTRA activado: Máximo rendimiento",
+            Color = Color3.fromRGB(0, 255, 0),
+            Font = Enum.Font.SourceSansBold,
+            FontSize = Enum.FontSize.Size18
+        })
+    end,
+})
+
+ERSection:NewLabel("Other Menu")
+ERSection:NewButton("Dispara tus FPS", "By TioHelmoso ", function()
+    local decalsyeeted = true -- Leaving this on makes games look shitty but the fps goes up by at least 20.
+    local g = game
+    local w = g.Workspace
+    local l = g.Lighting
+    local t = w.Terrain
+    t.WaterWaveSize = 0
+    t.WaterWaveSpeed = 0
+    t.WaterReflectance = 0
+    t.WaterTransparency = 0
+    t:Clear() -- Remove all terrain
+    l.GlobalShadows = false
+    l.FogEnd = 9e9
+    l.Brightness = 0
+    settings().Rendering.QualityLevel = "Level01"
+    
+    -- Remove buildings in City
+    if w:FindFirstChild("City") then
+        if w.City:FindFirstChild("Buildings") then
+            w.City.Buildings:Destroy()
+        end
+    end
+    
+    for i, v in pairs(g:GetDescendants()) do
+        if v:IsA("Part") or v:IsA("Union") or v:IsA("CornerWedgePart") or v:IsA("TrussPart") then
+            v.Material = "Plastic"
+            v.Reflectance = 0
+        elseif v:IsA("Decal") or v:IsA("Texture") and decalsyeeted then
+            v.Transparency = 1
+        elseif v:IsA("ParticleEmitter") or v:IsA("Trail") then
+            v.Lifetime = NumberRange.new(0)
+        elseif v:IsA("Explosion") then
+            v.BlastPressure = 1
+            v.BlastRadius = 1
+        elseif v:IsA("Fire") or v:IsA("SpotLight") or v:IsA("Smoke") then
+            v.Enabled = false
+        elseif v:IsA("MeshPart") then
+            v.Material = "Plastic"
+            v.Reflectance = 0
+            v.TextureID = 10385902758728957
+        end
+    end
+    for i, e in pairs(l:GetChildren()) do
+        if e:IsA("BlurEffect") or e:IsA("SunRaysEffect") or e:IsA("ColorCorrectionEffect") or e:IsA("BloomEffect") or e:IsA("DepthOfFieldEffect") then
+            e.Enabled = false
+        end
+    end
+end)
+
+function antilag()
+    local Lighting = game:GetService("Lighting")
+    local Terrain = game:GetService("Workspace"):FindFirstChildOfClass("Terrain")
+
+    -- Ajustes en el terreno
+    if Terrain then
+        Terrain.WaterWaveSize = 0
+        Terrain.WaterWaveSpeed = 0
+        Terrain.WaterReflectance = 0
+        Terrain.WaterTransparency = 0
+    end
+
+    -- Ajustes en la iluminación
+    Lighting.GlobalShadows = false
+    Lighting.FogEnd = 9e9
+    Lighting.Brightness = 0
+
+    -- Reducir calidad de renderizado
+    settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
+
+    -- Optimización de las partes del juego
+    for _, v in pairs(workspace:GetDescendants()) do
+        if v:IsA("BasePart") and not v:IsA("MeshPart") then
+            v.Material = Enum.Material.Plastic
+            v.Reflectance = 0
+        elseif v:IsA("Decal") then
+            v.Transparency = 1
+        elseif v:IsA("ParticleEmitter") or v:IsA("Trail") then
+            v.Lifetime = NumberRange.new(0)
+        elseif v:IsA("Explosion") then
+            v.BlastPressure = 0
+            v.BlastRadius = 0
+        end
+    end
+
+    -- Desactivar efectos visuales
+    for _, v in pairs(Lighting:GetChildren()) do
+        if v:IsA("BlurEffect") or v:IsA("SunRaysEffect") or v:IsA("ColorCorrectionEffect") or 
+           v:IsA("BloomEffect") or v:IsA("DepthOfFieldEffect") then
+            v.Enabled = false
+        end
+    end
+
+    -- Eliminar efectos visuales en tiempo real
+    workspace.DescendantAdded:Connect(function(v)
+        if v:IsA("ForceField") or v:IsA("Sparkles") or v:IsA("Smoke") or v:IsA("Fire") then
+            v:Destroy()
+        end
+    end)
+end
