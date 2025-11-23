@@ -884,6 +884,70 @@ SettingTab:CreateButton({
     end,
 })
 
+SettingTab:CreateButton({
+    Name = "⚡ Acelera tus FPS (Ultra Boost REAL)",
+    Callback = function()
+        -- Limpia RAM
+        for i = 1, 5 do collectgarbage("collect") end
+
+        -- Baja gráficos agresivamente
+        pcall(function()
+            settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
+        end)
+
+        -- Apaga efectos pesados
+        for _, v in ipairs(workspace:GetDescendants()) do
+            if v:IsA("ParticleEmitter")
+            or v:IsA("Trail")
+            or v:IsA("Smoke")
+            or v:IsA("Fire")
+            or v:IsA("Sparkles") then
+                v.Enabled = false
+            end
+        end
+
+        -- Iluminación suave
+        game.Lighting.GlobalShadows = false
+        game.Lighting.Brightness = 1
+        game.Lighting.FogEnd = 999999
+
+        -- Desactivar post-procesos
+        for _, v in ipairs(game.Lighting:GetChildren()) do
+            if v:IsA("DepthOfFieldEffect")
+            or v:IsA("BloomEffect")
+            or v:IsA("SunRaysEffect")
+            or v:IsA("ColorCorrectionEffect")
+            or v:IsA("BlurEffect") then
+                v.Enabled = false
+            end
+        end
+
+        -- Quitar texturas pesadas
+        for _, v in ipairs(workspace:GetDescendants()) do
+            if v:IsA("Texture") or v:IsA("Decal") then
+                v.Transparency = 1
+            end
+        end
+
+        -- Reduce volumen para ahorrar CPU
+        pcall(function()
+            sethiddenproperty(game:GetService("UserSettings").GameSettings, "MasterVolume", 0)
+        end)
+
+        -- Reduce render de sombras y reflejos
+        pcall(function()
+            workspace.CascadedShadows = false
+            workspace.GlobalWind = Vector3.new(0,0,0)
+        end)
+
+        -- Mensaje épico
+        Rayfield:Notify({
+            Title = "FPS Boost",
+            Content = "Tu PC anda como avioncito ✈🔥",
+            Duration = 5
+        })
+    end
+})
 
 
 
