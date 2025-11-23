@@ -964,3 +964,78 @@ SettingTab:CreateButton({
         loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
     end
 })
+local Tab = Window:CreateTab("Optimización", 4483362458)
+local Section = Tab:CreateSection("AntiLag Ultra")
+
+--// FUNCION ANTILAG ULTRA
+function AntiLagUltra()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+
+    -- listas permitidas
+    local allowed = {
+        "Baseplate",
+        "Terrain",
+        "Road",
+        "Street",
+        "Floor",
+        "Bridge",
+        "Building",
+        "Wall",
+        "House",
+        "Main",
+        "Spawn",
+        "RoadLine"
+    }
+
+    local function isAllowed(obj)
+        for _, word in pairs(allowed) do
+            if string.find(obj.Name:lower(), word:lower()) then
+                return true
+            end
+        end
+        return false
+    end
+
+    -- Eliminar cosas pesadas
+    for _, obj in pairs(workspace:GetDescendants()) do
+        if obj:IsA("Part") or obj:IsA("MeshPart") or obj:IsA("UnionOperation") or obj:IsA("Model") then
+            if not isAllowed(obj) then
+                pcall(function() obj:Destroy() end)
+            end
+        end
+        if obj:IsA("Decal") or obj:IsA("Texture") then
+            pcall(function() obj:Destroy() end)
+        end
+        if obj:IsA("ParticleEmitter") or obj:IsA("Trail") or obj:IsA("Fire") or obj:IsA("Smoke") then
+            pcall(function() obj:Destroy() end)
+        end
+    end
+
+    -- Mejorar FPS
+    settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
+    game.Lighting.GlobalShadows = false
+    game.Lighting.FogEnd = 9e9
+    game.Lighting.FogStart = 9e9
+    sethiddenproperty(game.Lighting, "Technology", Enum.Technology.Compatibility)
+
+    -- Desactivar efectos visuales del jugador
+    for _, v in pairs(character:GetDescendants()) do
+        if v:IsA("ParticleEmitter") or v:IsA("Trail") then
+            v.Enabled = false
+        end
+    end
+end
+
+--// BOTÓN
+Section:CreateButton({
+    Name = "Activar Anti-Lag Ultra",
+    Callback = function()
+        AntiLagUltra()
+        Rayfield:Notify({
+            Title = "AntiLag Activado",
+            Content = "Se eliminaron objetos pesados y optimizado FPS.",
+            Duration = 5
+        })
+    end,
+})
