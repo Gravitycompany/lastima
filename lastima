@@ -743,22 +743,14 @@ createFarmToggle("FARM ZONE #1 [1]", 650, 779, 284)
 createFarmToggle("FARM ZONE #2 [2]", -2000, 95, 300)
 createFarmToggle("FARM ZONE #3 [3]", 3000, 97, 900)
 
-------------------------------------------------------------
--- 🧪 SETTINGS TAB
-------------------------------------------------------------
 
-local SettingTab = Window:CreateTab("Setting", nil)
-local SettingSection = SettingTab:CreateSection("Opciones")
-
-
-------------------------------------------------------------
--- 🔘 ANTI-AFK REAL PARA KAVO
-------------------------------------------------------------
+local SettingTab = Window:CreateTab("Setting")
+SettingTab:CreateSection("Opciones")
 
 local AntiAFK_Enabled = false
 local AntiAFK_Connection = nil
 
-SettingSection:CreateButton({
+SettingTab:CreateButton({
     Name = "Anti-AFK (Activar / Desactivar)",
     Callback = function()
         AntiAFK_Enabled = not AntiAFK_Enabled
@@ -775,9 +767,9 @@ SettingSection:CreateButton({
                 vu:Button2Up(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
             end)
 
-            game.StarterGui:SetCore("SendNotification",{
+            Rayfield:Notify({
                 Title = "Anti-AFK",
-                Text = "✅ Activado",
+                Content = "✅ Activado",
                 Duration = 6
             })
 
@@ -787,9 +779,9 @@ SettingSection:CreateButton({
                 AntiAFK_Connection = nil
             end
 
-            game.StarterGui:SetCore("SendNotification",{
+            Rayfield:Notify({
                 Title = "Anti-AFK",
-                Text = "❌ Desactivado",
+                Content = "❌ Desactivado",
                 Duration = 6
             })
         end
@@ -797,9 +789,6 @@ SettingSection:CreateButton({
 })
 
 
-------------------------------------------------------------
--- 🔥 DISPARA TUS FPS (FPS BOOST ULTRA)
-------------------------------------------------------------
 
 SettingTab:CreateButton({
     Name = "🔥 Dispara tus FPS",
@@ -827,14 +816,8 @@ SettingTab:CreateButton({
             settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
         end)
 
-        if w:FindFirstChild("City") then
-            if w.City:FindFirstChild("Buildings") then
-                w.City.Buildings:Destroy()
-            end
-        end
-
         for i, v in pairs(g:GetDescendants()) do
-            if v:IsA("Part") or v:IsA("Union") or v:IsA("CornerWedgePart") or v:IsA("TrussPart") then
+            if v:IsA("BasePart") or v:IsA("Union") or v:IsA("CornerWedgePart") or v:IsA("TrussPart") then
                 v.Material = Enum.Material.Plastic
                 v.Reflectance = 0
             elseif v:IsA("Decal") or v:IsA("Texture") and decalsyeeted then
@@ -859,15 +842,11 @@ SettingTab:CreateButton({
                 e.Enabled = false
             end
         end
-
-        print("🔥 FPS Boost Activado")
     end
 })
 
 
-------------------------------------------------------------
--- ⚡ ANTI-LAG ULTRA
-------------------------------------------------------------
+-
 
 local function antilag()
     local Lighting = game:GetService("Lighting")
@@ -917,32 +896,27 @@ local function antilag()
 end
 
 SettingTab:CreateButton({
-    Name = "⚡ Anti-Lag ULTRA",
+    Name = " Anti-Lag ULTRA",
     Callback = function()
         antilag()
-        print("⚡ AntiLag Activado")
     end
 })
 
 
-------------------------------------------------------------
--- 🔄 REJOIN
-------------------------------------------------------------
+
 
 SettingTab:CreateButton({
-    Name = "🔄 Rejoin",
+    Name = " Rejoin",
     Callback = function()
         loadstring(game:HttpGet("https://pastebin.com/raw/1gtVMUz3"))()
     end
 })
 
 
-------------------------------------------------------------
--- ♾️ INFINITE YIELD
-------------------------------------------------------------
+
 
 SettingTab:CreateButton({
-    Name = "♾️ Infinite Yield",
+    Name = " Infinite Yield",
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
     end
