@@ -837,8 +837,8 @@ SettingTab:CreateButton({
         end)
 
         Rayfield:Notify({
-            Title = "🔥 FPS Boost",
-            Content = "FPS Disparados ✔ Ultra Optimización aplicada",
+            Title = " FPS Boost",
+            Content = " Ultra Optimización aplicada",
             Duration = 6
         })
     end,
