@@ -3,11 +3,11 @@ debugX = true
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local Window = Rayfield:CreateWindow({
-   Name = "LASTIMA V!",
-   Icon = 20, -- Icon in Topbar. Can use Lucide Icons (string) or Roblox Image (number). 0 to use no icon (default).
+   Name = "GRAVEDADx1",
+   Icon = 11735801220, -- Icon in Topbar. Can use Lucide Icons (string) or Roblox Image (number). 0 to use no icon (default).
    LoadingTitle = "GRAVEDAD-0",
    LoadingSubtitle = "by Papita",
-   Theme = "Default", -- Check https://docs.sirius.menu/rayfield/configuration/themes
+   Theme = "Amethyst", -- Check https://docs.sirius.menu/rayfield/configuration/themes
 
    DisableRayfieldPrompts = false,
    DisableBuildWarnings = false, -- Prevents Rayfield from warning when the script has a version mismatch with the interface
@@ -39,8 +39,8 @@ local Window = Rayfield:CreateWindow({
 Rayfield:Notify({
     Title = "Bienvenido ha age of alts",
     Content = "Worst Game",
-    Duration = 6,
-    Image = nil,
+    Duration = 12,
+    Image = 4483362458,
     Actions = {
         Ignore = {
             Name = "Okay!",
@@ -51,7 +51,7 @@ Rayfield:Notify({
     },
 })
 
-local StatsTab = Window:CreateTab("Auto Stats ⬆️")
+local StatsTab = Window:CreateTab("Auto Stats ", 6031075938)
 local StatSection = StatsTab:CreateSection("Upgrade Settings")
 
 --  Lista de estadísticas
@@ -110,8 +110,8 @@ for _, amount in ipairs(upgradeAmounts) do
     })
 end
 
--- Farm Tab
-local TargetTab = Window:CreateTab("Player", nil) 
+-- Farm Tab0
+local TargetTab = Window:CreateTab("Player", "user") 
 local TargetSection = TargetTab:CreateSection("Acciones del jugador")
 
 -- Name Esp Button
@@ -288,7 +288,7 @@ local noclipConnection = nil
 })
 
 -- Rapid Punch----------------------------------------------------------------------------------------------------
-local Main4Tab = Window:CreateTab("KIll", nil) 
+local Main4Tab = Window:CreateTab("KIll", "crosshair") 
 local Main4Section = Main4Tab:CreateSection("Kil")
 
 local Label = Main4Tab:CreateLabel("---- KILL AURA UI ----")
@@ -730,7 +730,7 @@ local Toggle = Main4Tab:CreateToggle({
     end,
 })
 -- Crear pestaña de Farm
-local FarmTab = Window:CreateTab(" Farm", 4483362458)
+local FarmTab = Window:CreateTab(" Farm", "repeat" )
 local FarmSection = FarmTab:CreateSection("UI Spawn") -- solo visual
 
 FarmTab:CreateButton({
@@ -785,7 +785,7 @@ createFarmToggle("FARM ZONE #3 [3]", 3000, 97, 900)
 
 
 -- 🔧 TAB DE SETTING
-local SettingTab = Window:CreateTab("Setting", 4483362458)
+local SettingTab = Window:CreateTab("Setting", 6031280882)
 local SettingSection = SettingTab:CreateSection("Opciones")
 
 
@@ -884,81 +884,7 @@ SettingTab:CreateButton({
     end,
 })
 
-SettingTab:CreateButton({
-    Name = " Anti-Lag Ultra (Seguro)",
-    Callback = function()
 
-        -- Whitelist de objetos importantes
-        local whitelist = {
-            "base", "floor", "ground", "terrain", "road", 
-            "building", "house", "main", "map", "city"
-        }
-
-        local function isAllowed(obj)
-            for _, word in ipairs(whitelist) do
-                if string.find(obj.Name:lower(), word) then
-                    return true
-                end
-            end
-            return false
-        end
-
-        -- Bajar calidad visual
-        pcall(function()
-            settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
-        end)
-
-        -- Desactivar sombras / efectos
-        local L = game:GetService("Lighting")
-        L.GlobalShadows = false
-        L.FogEnd = 999999
-        L.Brightness = 1
-
-        for _, fx in pairs(L:GetChildren()) do
-            if fx:IsA("BlurEffect") 
-            or fx:IsA("SunRaysEffect") 
-            or fx:IsA("ColorCorrectionEffect")
-            or fx:IsA("DepthOfFieldEffect")
-            or fx:IsA("BloomEffect") then
-                fx.Enabled = false
-            end
-        end
-
-        -- Remover efectos pesados del mapa
-        for _, v in pairs(workspace:GetDescendants()) do
-
-            -- Efectos pesados
-            if v:IsA("ParticleEmitter")
-            or v:IsA("Trail")
-            or v:IsA("Fire")
-            or v:IsA("Smoke")
-            or v:IsA("Sparkles")
-            or v:IsA("Explosion") then
-                v:Destroy()
-
-            -- Quitar texturas
-            elseif v:IsA("Decal") or v:IsA("Texture") then
-                v.Transparency = 1
-
-            -- Optimizar meshes pequeños, pero NO borrar estructuras fuertes
-            elseif v:IsA("MeshPart") and not isAllowed(v) then
-                v:Destroy()
-
-            elseif v:IsA("Part") and not isAllowed(v) then
-                if (v.Size.X < 6 and v.Size.Y < 6 and v.Size.Z < 6) then
-                    v:Destroy()
-                end
-            end
-        end
-
-        -- Notificación Rayfield
-        Rayfield:Notify({
-            Title = "Anti-Lag Ultra",
-            Content = "⚡ Mapa optimizado y FPS mejorados",
-            Duration = 5
-        })
-    end
-})
 
 SettingTab:CreateButton({
     Name = "Rejoin",
@@ -967,10 +893,10 @@ SettingTab:CreateButton({
     end,
 })
 
+
 SettingTab:CreateButton({
     Name = "Inf Yield",
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
-    end
+    end,
 })
-
