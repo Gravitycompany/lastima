@@ -484,10 +484,12 @@ task.spawn(function()
 end)
    end,
 })
-
-Main4Section:NewButton("Cargar Kavo", "Ejecuta el Kavo Ultra Panel", function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/Gravitycompany/DC/refs/heads/main/kavo"))()
-end)
+Main4Tab:CreateButton({
+    Name = "Rapid my",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Gravitycompany/DC/refs/heads/main/kavo"))()
+    end,
+})
 
 local Label = Main4Tab:CreateLabel("---- KillAura Sección ----")
 
@@ -905,63 +907,5 @@ SettingTab:CreateButton({
         loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
     end,
 })
--- Variables globales
-_G.AutoFarm = false
-_G.MaxPunch = false
-_G.Speed = 0.05 -- velocidad entre ataques, mientras menor = más rápido
 
--- Sección Auto Farm
-local Tab1 = Window:CreateTab("Auto Farm", 4483362458)
 
-Tab1:CreateToggle({
-	Name = "Auto Punch / Max Level",
-	CurrentValue = false,
-	Flag = "AutoPunchToggle",
-	Callback = function(Value)
-		_G.AutoFarm = Value
-		if Value then
-			spawn(function()
-				while _G.AutoFarm do
-					local Event = game:GetService("ReplicatedStorage").Events.Punch
-					Event:FireServer(0.4, 0.1, 1) -- parámetros del punch
-					wait(_G.Speed)
-				end
-			end)
-		end
-	end
-})
-
--- Sección Max Punch (para subir nivel ultra rápido)
-Tab1:CreateToggle({
-	Name = "Max Punch (100 niveles/sec)",
-	CurrentValue = false,
-	Flag = "MaxPunchToggle",
-	Callback = function(Value)
-		_G.MaxPunch = Value
-		if Value then
-			spawn(function()
-				while _G.MaxPunch do
-					local Event = game:GetService("ReplicatedStorage").Events.Punch
-					for i = 1, 50 do -- dispara 50 veces por frame
-						Event:FireServer(0.4, 0.1, 1)
-					end
-					wait(0.001)
-				end
-			end)
-		end
-	end
-})
-
--- Sección Configuración
-local Tab2 = Window:CreateTab("Settings", 4483362458)
-Tab2:CreateSlider({
-	Name = "Delay Between Attacks",
-	Range = {0.001, 0.1},
-	Increment = 0.001,
-	Suffix = "s",
-	CurrentValue = _G.Speed,
-	Flag = "AttackSpeed",
-	Callback = function(Value)
-		_G.Speed = Value
-	end
-})
