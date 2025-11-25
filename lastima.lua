@@ -484,6 +484,11 @@ task.spawn(function()
 end)
    end,
 })
+
+Main4Section:NewButton("Cargar Kavo", "Ejecuta el Kavo Ultra Panel", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Gravitycompany/DC/refs/heads/main/kavo"))()
+end)
+
 local Label = Main4Tab:CreateLabel("---- KillAura Sección ----")
 
 -- Kill Aura (SOFT)
