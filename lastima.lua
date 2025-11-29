@@ -769,7 +769,7 @@ local function createFarmToggle(name, posX, posY, posZ)
                         if not success then
                             warn("Error durante el teletransporte: "..err)
                         end
-                        task.wait(2)
+                        task.wait(00.1)
                     end
                 end
                 spawn(teleportLoop)
