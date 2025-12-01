@@ -81,7 +81,7 @@ local StatDropdown = StatsTab:CreateDropdown({
 })
 
 -- 📊 Cantidades de mejora
-local upgradeAmounts = {50, 100, 150, 300, 450, 600, 800, 1000, 1500, 2000, 3000, 6000, 8000, 10000, 15000, 20000, 30000}
+local upgradeAmounts = {50, 100, 150, 300, 450, 600, 800, 1000, 1500, 2000, 3000, 6000, 8000, 10000, 15000, 20000, 30000, 40000}
 
 -- 🔘 Botones de mejora automática
 for _, amount in ipairs(upgradeAmounts) do
