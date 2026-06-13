@@ -558,7 +558,7 @@ MainTab:CreateButton({
         -- Notificación corregida
         Rayfield:Notify({
             Title = "age of mierda",
-            Content = esto elimina cualquier cosa para que tu tostadora dure farmeando,
+            Content = "esto elimina cualquier cosa para que tu tostadora dure farmeando",
             Duration = 10
         })
     end,
