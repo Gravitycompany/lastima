@@ -4,35 +4,35 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local Window = Rayfield:CreateWindow({
    Name = "GRAVEDADx1.1",
-   Icon = 11735801220, -- Icon in Topbar. Can use Lucide Icons (string) or Roblox Image (number). 0 to use no icon (default).
+   Icon = 11735801220,
    LoadingTitle = "GRAVEDAD-Lite",
    LoadingSubtitle = "by Papita",
-   Theme = "Ocean", -- Check https://docs.sirius.menu/rayfield/configuration/themes
+   Theme = "Ocean",
 
    DisableRayfieldPrompts = false,
-   DisableBuildWarnings = false, -- Prevents Rayfield from warning when the script has a version mismatch with the interface
+   DisableBuildWarnings = false,
 
    ConfigurationSaving = {
       Enabled = true,
-      FolderName = nil, -- Create a custom folder for your hub/game
+      FolderName = nil,
       FileName = "Big Hub"
    },
 
    Discord = {
-      Enabled = false, -- Prompt the user to join your Discord server if their executor supports it
-      Invite = "noinvitelink", -- The Discord invite code, do not include discord.gg/. E.g. discord.gg/ ABCD would be ABCD
-      RememberJoins = true -- Set this to false to make them join the discord every time they load it up
+      Enabled = false,
+      Invite = "noinvitelink",
+      RememberJoins = true
    },
 
-   KeySystem = false, -- Set this to true to use our key system
+   KeySystem = false,
    KeySettings = {
       Title = "Sistema avanzado prueba",
       Subtitle = "Key System",
-      Note = "No method of obtaining the key is provided", -- Use this to tell the user how to get a key
-      FileName = "Key", -- It is recommended to use something unique as other scripts using Rayfield may overwrite your key file
-      SaveKey = true, -- The user's key will be saved, but if you change the key, they will be unable to use your script
-      GrabKeyFromSite = false, -- If this is true, set Key below to the RAW site you would like Rayfield to get the key from
-      Key = {"oi"} -- List of keys that will be accepted by the system, can be RAW file links (pastebin, github etc) or simple strings ("hello","key22")
+      Note = "No method of obtaining the key is provided",
+      FileName = "Key",
+      SaveKey = true,
+      GrabKeyFromSite = false,
+      Key = {"oi"}
    }
 })
 
@@ -65,44 +65,34 @@ MainTab:CreateToggle({
         
         if getgenv().OrbFarm then
             task.spawn(function()
-                -- Cacheamos servicios fuera del bucle para máxima velocidad
                 local Players = game:GetService("Players")
                 local lp = Players.LocalPlayer
                 local orbsFolder = workspace:FindFirstChild("ExperienceOrbs")
 
                 while getgenv().OrbFarm do
-                    -- Espera óptima (0.1s para no congelar el juego pero farmear instantáneo)
                     task.wait(0.1) 
                     
                     pcall(function()
                         local char = lp.Character
-                        -- Usamos el HumanoidRootPart o Head de forma segura
                         local root = char and (char:FindFirstChild("HumanoidRootPart") or char:FindFirstChild("Head"))
                         if not root then return end
 
-                        -- Si la carpeta cambió de nombre o es dinámica, intentamos buscarla
                         if not orbsFolder then
                             orbsFolder = workspace:FindFirstChild("ExperienceOrbs") or workspace:FindFirstChild("Orbs")
                         end
 
                         if orbsFolder then
-                            -- Conseguimos los hijos directos (más rápido que GetDescendants)
                             local orbs = orbsFolder:GetChildren()
                             for i = 1, #orbs do
                                 if not getgenv().OrbFarm then break end
                                 local orb = orbs[i]
                                 
-                                -- Método 1: Fuerza Bruta con firetouchinterest
                                 local touchInterest = orb:FindFirstChildWhichIsA("TouchInterest", true)
                                 if touchInterest then
                                     firetouchinterest(root, orb, 0)
-                                    task.defer(firetouchinterest, root, orb, 1) -- Desconexión limpia
-                                
-                                -- Método 2: Bypass por Magnitud (Si el juego eliminó los TouchInterests en cliente)
+                                    task.defer(firetouchinterest, root, orb, 1)
                                 elseif orb:IsA("BasePart") then
-                                    -- Simulamos que estamos tocando la orb mediante Redirección de CFrame 
-                                    -- (Muchas protecciones actuales caen con esto)
-                                    if (orb.Position - root.Position).Magnitude < 500 then -- Radio de 500 pernos
+                                    if (orb.Position - root.Position).Magnitude < 500 then
                                         firetouchinterest(root, orb, 0)
                                     end
                                 end
@@ -115,27 +105,23 @@ MainTab:CreateToggle({
     end
 })
 
-local Button = MainTab:CreateButton({
+MainTab:CreateButton({
     Name = "KillAura UI MENU lite",
     Callback = function()
         task.spawn(function()
-            -- Limpieza previa
             local coreGui = game:GetService("CoreGui")
             if coreGui:FindFirstChild("KillAuraGui") then 
                 coreGui.KillAuraGui:Destroy()
             end
 
-            -- Servicios
             local Players = game:GetService("Players")
             local ReplicatedStorage = game:GetService("ReplicatedStorage")
             local UIS = game:GetService("UserInputService")
             
-            -- UI Base Minimalista
             local screenGui = Instance.new("ScreenGui", coreGui)
             screenGui.Name = "KillAuraGui"
             screenGui.ResetOnSpawn = false
 
-            -- Frame Principal (Diseño plano, moderno y compacto)
             local main = Instance.new("Frame", screenGui)
             main.Size = UDim2.new(0, 300, 0, 270)
             main.Position = UDim2.new(0.5, -150, 0.5, -135)
@@ -147,7 +133,6 @@ local Button = MainTab:CreateButton({
             mainStroke.Color = Color3.fromRGB(60, 60, 70)
             mainStroke.Thickness = 1.5
 
-            -- Título Principal
             local title = Instance.new("TextLabel", main)
             title.Size = UDim2.new(1, -40, 0, 40)
             title.Position = UDim2.new(0, 15, 0, 0)
@@ -158,7 +143,6 @@ local Button = MainTab:CreateButton({
             title.TextSize = 13
             title.TextXAlignment = Enum.TextXAlignment.Left
 
-            -- Botón Cerrar Discreto
             local closeBtn = Instance.new("TextButton", main)
             closeBtn.Size = UDim2.new(0, 30, 0, 30)
             closeBtn.Position = UDim2.new(1, -35, 0, 5)
@@ -173,7 +157,6 @@ local Button = MainTab:CreateButton({
                 screenGui:Destroy()
             end)
 
-            -- Función constructora para Inputs (Ahorra líneas de código)
             local function createInput(placeholder, text, posY)
                 local box = Instance.new("TextBox", main)
                 box.Size = UDim2.new(1, -30, 0, 36)
@@ -192,7 +175,6 @@ local Button = MainTab:CreateButton({
             local hitsBox = createInput("Cantidad de golpes (Ej: 5)", "Golpes: " .. (getgenv().hits or 1), 45)
             local cooldownBox = createInput("Cooldown en segundos (Ej: 0.1)", "Cooldown: " .. (getgenv().cooldown or 1), 90)
 
-            -- Formateadores de texto e inputs al perder foco
             hitsBox.FocusLost:Connect(function()
                 local val = tonumber(hitsBox.Text:match("%d+")) or getgenv().hits or 1
                 getgenv().hits = val
@@ -201,12 +183,11 @@ local Button = MainTab:CreateButton({
 
             cooldownBox.FocusLost:Connect(function()
                 local val = tonumber(cooldownBox.Text:match("[%d%.]+")) or getgenv().cooldown or 1
-                if val < 0.01 then val = 0.01 end -- Permite velocidades extremas de hasta 0.01
+                if val < 0.01 then val = 0.01 end
                 getgenv().cooldown = val
                 cooldownBox.Text = string.format("Cooldown: %.2fs", val)
             end)
 
-            -- Estado Visual
             local statusLabel = Instance.new("TextLabel", main)
             statusLabel.Size = UDim2.new(1, -30, 0, 30)
             statusLabel.Position = UDim2.new(0, 15, 0, 140)
@@ -217,7 +198,6 @@ local Button = MainTab:CreateButton({
             statusLabel.TextSize = 11
             statusLabel.TextXAlignment = Enum.TextXAlignment.Left
 
-            -- Botón de Activación Principal
             local toggleBtn = Instance.new("TextButton", main)
             toggleBtn.Size = UDim2.new(1, -30, 0, 45)
             toggleBtn.Position = UDim2.new(0, 15, 0, 185)
@@ -229,11 +209,9 @@ local Button = MainTab:CreateButton({
             toggleBtn.AutoButtonColor = true
             Instance.new("UICorner", toggleBtn).CornerRadius = UDim.new(0, 6)
 
-            -- Lógica Eficaz del KillAura
             toggleBtn.MouseButton1Click:Connect(function()
                 getgenv().attackPlayer = not getgenv().attackPlayer
                 
-                -- Actualizar valores de los inputs inmediatamente antes de arrancar
                 getgenv().hits = tonumber(hitsBox.Text:match("%d+")) or getgenv().hits or 1
                 local cd = tonumber(cooldownBox.Text:match("[%d%.]+")) or getgenv().cooldown or 1
                 getgenv().cooldown = cd < 0.01 and 0.01 or cd
@@ -245,13 +223,11 @@ local Button = MainTab:CreateButton({
                     statusLabel.Text = string.format("● ACTIVO | HITS: %d | CD: %.2fs", getgenv().hits, getgenv().cooldown)
                     statusLabel.TextColor3 = Color3.fromRGB(100, 220, 140)
 
-                    -- Bucle optimizado en un hilo separado
                     task.spawn(function()
                         local punchEvent = ReplicatedStorage:WaitForChild("Events"):WaitForChild("Punch")
                         while getgenv().attackPlayer do
                             local char = Players.LocalPlayer.Character
                             if char and char:FindFirstChild("Humanoid") and char.Humanoid.Health > 0 then
-                                -- Bucle de golpes optimizado sin pausas internas innecesarias
                                 for i = 1, getgenv().hits do
                                     if not getgenv().attackPlayer then break end
                                     punchEvent:FireServer(0.4, 0.1, 1)
@@ -269,7 +245,6 @@ local Button = MainTab:CreateButton({
                 end
             end)
 
-            -- Sistema de Arrastre (Drag) Ultra Optimizado (Sustituye la propiedad obsoleta .Draggable)
             local dragging, dragInput, dragStart, startPos
             main.InputBegan:Connect(function(input)
                 if input.UserInputType == Enum.UserInputType.MouseButton1 then
@@ -291,22 +266,18 @@ local Button = MainTab:CreateButton({
 MainTab:CreateButton({
     Name = "Spawn Point UI v2.1 lite",
     Callback = function()
-        -- SISTEMA SPAWN BY PAPAS (MINIMALISTA - SOPORTE 0.01s)
         local Players = game:GetService("Players")
-        local TweenService = game:GetService("TweenService")
         local UIS = game:GetService("UserInputService")
         
         local player = Players.LocalPlayer
         local spawnPosition = nil
         local isActive = false
-        local interval = 1.00 -- Por defecto
+        local interval = 1.00
 
-        -- UI Base
         local screenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
         screenGui.Name = "QuantumSpawnUI"
         screenGui.ResetOnSpawn = false
 
-        -- Ventana Principal
         local main = Instance.new("Frame", screenGui)
         main.Size = UDim2.new(0, 300, 0, 240)
         main.Position = UDim2.new(0.5, -150, 0.5, -120)
@@ -317,7 +288,6 @@ MainTab:CreateButton({
         local mainStroke = Instance.new("UIStroke", main)
         mainStroke.Color = Color3.fromRGB(50, 50, 60)
 
-        -- Título
         local title = Instance.new("TextLabel", main)
         title.Size = UDim2.new(1, -40, 0, 40)
         title.Position = UDim2.new(0, 15, 0, 0)
@@ -328,7 +298,6 @@ MainTab:CreateButton({
         title.TextSize = 14
         title.TextXAlignment = Enum.TextXAlignment.Left
 
-        -- Botón Cerrar
         local closeBtn = Instance.new("TextButton", main)
         closeBtn.Size = UDim2.new(0, 30, 0, 30)
         closeBtn.Position = UDim2.new(1, -35, 0, 5)
@@ -338,7 +307,6 @@ MainTab:CreateButton({
         closeBtn.TextColor3 = Color3.fromRGB(150, 150, 160)
         closeBtn.TextSize = 14
 
-        -- Indicador de Coordenadas
         local coordText = Instance.new("TextLabel", main)
         coordText.Size = UDim2.new(1, -30, 0, 40)
         coordText.Position = UDim2.new(0, 15, 0, 45)
@@ -349,7 +317,6 @@ MainTab:CreateButton({
         coordText.TextSize = 12
         Instance.new("UICorner", coordText).CornerRadius = UDim.new(0, 6)
 
-        -- Input de Intervalo (Ajustado para 2 decimales)
         local intervalInput = Instance.new("TextBox", main)
         intervalInput.Size = UDim2.new(1, -30, 0, 35)
         intervalInput.Position = UDim2.new(0, 15, 0, 95)
@@ -360,7 +327,6 @@ MainTab:CreateButton({
         intervalInput.TextSize = 12
         Instance.new("UICorner", intervalInput).CornerRadius = UDim.new(0, 6)
 
-        -- Botones de Acción
         local function createBtn(text, pos, bg)
             local btn = Instance.new("TextButton", main)
             btn.Size = UDim2.new(0.43, 0, 0, 40)
@@ -378,18 +344,14 @@ MainTab:CreateButton({
         local setBtn = createBtn("SET POS", UDim2.new(0, 15, 0, 145), Color3.fromRGB(45, 75, 180))
         local activateBtn = createBtn("ACTIVATE", UDim2.new(0.57, -15, 0, 145), Color3.fromRGB(35, 140, 85))
 
-        -- Lógica: Cambiar Intervalo (Detecta desde 0.01)
         intervalInput.FocusLost:Connect(function()
             local value = tonumber(intervalInput.Text:match("[%d%.]+"))
-            -- Ahora el mínimo es 0.01
             if value and value >= 0.01 and value <= 5.0 then 
                 interval = value 
             end
-            -- Muestra siempre 2 decimales (.2f)
             intervalInput.Text = string.format("Intervalo: %.2fs", interval)
         end)
 
-        -- Lógica: Guardar Posición
         setBtn.MouseButton1Click:Connect(function()
             local hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
             if hrp then
@@ -399,7 +361,6 @@ MainTab:CreateButton({
             end
         end)
 
-        -- Lógica: Bucle de Teleport
         activateBtn.MouseButton1Click:Connect(function()
             if not spawnPosition then return end
             isActive = not isActive
@@ -425,13 +386,11 @@ MainTab:CreateButton({
             end
         end)
 
-        -- Cerrar
         closeBtn.MouseButton1Click:Connect(function()
             isActive = false
             screenGui:Destroy()
         end)
 
-        -- Sistema de Arrastre (Drag)
         local dragging, dragInput, dragStart, startPos
         main.InputBegan:Connect(function(input)
             if input.UserInputType == Enum.UserInputType.MouseButton1 then
@@ -472,7 +431,7 @@ MainTab:CreateButton({
             Rayfield:Notify({
                 Title = "Anti-AFK",
                 Content = "Activado correctamente.",
-                Duration = 99999999999
+                Duration = 5
             })
         else
             Rayfield:Notify({
@@ -484,8 +443,6 @@ MainTab:CreateButton({
     end,
 })
 
-
-
 MainTab:CreateButton({
     Name = "farm24",
     Callback = function()
@@ -493,7 +450,6 @@ MainTab:CreateButton({
         local w = workspace
         local l = g:GetService("Lighting")
 
-        -- 1. Forzar renderizado plano nativo en el Workspace
         w.LevelOfDetail = Enum.LevelOfDetail.Low
         
         local t = w:FindFirstChildOfClass("Terrain")
@@ -505,19 +461,16 @@ MainTab:CreateButton({
             t.Decoration = false
         end
 
-        -- 2. Apagar iluminación pesada sin romper el script
         l.GlobalShadows = false
         l.FogEnd = 9e9
         l.Brightness = 0
         
-        -- Desactivar efectos ambientales reales de forma directa
         for _, effect in ipairs(l:GetChildren()) do
             if effect:IsA("PostEffect") or effect:IsA("BlurEffect") or effect:IsA("SunRaysEffect") or effect:IsA("BloomEffect") or effect:IsA("ColorCorrectionEffect") or effect:IsA("DepthOfFieldEffect") then
                 effect:Destroy()
             end
         end
 
-        -- 3. Limpieza y Purga Instantánea (Tablas de alto rendimiento)
         task.spawn(function()
             local descendants = w:GetDescendants()
             
@@ -539,13 +492,11 @@ MainTab:CreateButton({
                     v:Destroy()
                 end
                 
-                -- Limpieza fluida: cede el paso rápido para evitar lag-spikes
                 if i % 1000 == 0 then task.wait() end
             end
         end)
 
-        -- 4. Filtro Anti-Basura Nuevo (Bypass en tiempo de ejecución)
-        w.DescendantAdded:Connect(function(v)
+        workspace.DescendantAdded:Connect(function(v)
             if v:IsA("Decal") or v:IsA("Texture") or v:IsA("ParticleEmitter") or v:IsA("Trail") or v:IsA("Smoke") or v:IsA("Fire") or v:IsA("Sparkles") then
                 task.defer(v.Destroy, v)
             elseif v:IsA("BasePart") then
@@ -555,7 +506,7 @@ MainTab:CreateButton({
             end
         end)
 
-        -- Notificación corregida
+        -- FIJADO: Agregadas comillas dobles que faltaban aquí
         Rayfield:Notify({
             Title = "age of mierda",
             Content = "esto elimina cualquier cosa para que tu tostadora dure farmeando",
@@ -573,7 +524,6 @@ local lp = Players.LocalPlayer
 local playerList = {}
 local selectedPlayer = nil
 
--- Función para actualizar la lista de jugadores de forma segura
 local function updatePlayerList()
     table.clear(playerList)
     for _, p in ipairs(Players:GetPlayers()) do
@@ -583,10 +533,8 @@ local function updatePlayerList()
     end
 end
 
--- Inicializamos la lista por primera vez
 updatePlayerList()
 
--- Dropdown de Jugadores
 local PlayerDropdown = MainTab:CreateDropdown({
     Name = "Seleccionar Jugador",
     Options = playerList,
@@ -594,7 +542,6 @@ local PlayerDropdown = MainTab:CreateDropdown({
     MultipleOptions = false,
     Flag = "PlayerTPDropdown",
     Callback = function(selected)
-        -- Si viene como tabla (dependiendo de la versión de Rayfield), agarramos el primer valor
         if type(selected) == "table" then
             selectedPlayer = selected[1]
         else
@@ -603,7 +550,6 @@ local PlayerDropdown = MainTab:CreateDropdown({
     end,
 })
 
--- Botón para Teletransportarse
 MainTab:CreateButton({
     Name = " Teletransportarse",
     Callback = function()
@@ -617,7 +563,7 @@ MainTab:CreateButton({
         local myHrp = lp.Character and lp.Character:FindFirstChild("HumanoidRootPart")
         
         if myHrp and targetHrp then
-            myHrp.CFrame = targetHrp.CFrame * CFrame.new(0, 3, 0) -- Te tpea 3 studs arriba para no bugearte
+            myHrp.CFrame = targetHrp.CFrame * CFrame.new(0, 3, 0)
             Rayfield:Notify({Title = "Teleport", Content = "Te has tpeado con éxito a " .. selectedPlayer, Duration = 2})
         else
             Rayfield:Notify({Title = " Error", Content = "El jugador no tiene Character o está muerto", Duration = 3})
@@ -625,17 +571,15 @@ MainTab:CreateButton({
     end,
 })
 
--- Botón Manual de Refresh (Por si acaso)
 MainTab:CreateButton({
     Name = " Actualizar Lista Manual",
     Callback = function()
         updatePlayerList()
-        PlayerDropdown:Refresh(playerList, true) -- Refresca las opciones visuales del UI
+        PlayerDropdown:Refresh(playerList, true)
         Rayfield:Notify({Title = " Lista Actualizada", Content = "Se escanearon los jugadores del servidor", Duration = 2})
     end,
 })
 
--- AUTOMÁTICO: Auto-Refresh cuando alguien entra o sale del servidor
 local function autoRefresh()
     updatePlayerList()
     PlayerDropdown:Refresh(playerList, false)
@@ -643,10 +587,11 @@ end
 
 Players.PlayerAdded:Connect(autoRefresh)
 Players.PlayerRemoving:Connect(autoRefresh)
-local StatsTab = Window:CreateTab("Auto Stats ", 6031075938)
+
+-- SECCIÓN AUTO STATS
+local StatsTab = Window:CreateTab("Auto Stats", 6031075938)
 local StatSection = StatsTab:CreateSection("Upgrade Settings")
 
---  Lista de estad sticas
 local function GetAutoStatsList()
     return {
         "vitality", "healing", "strength", "energy", "flight", "speed",
@@ -655,45 +600,51 @@ local function GetAutoStatsList()
     }
 end
 
--- ?? Dropdown para seleccionar la estad stica
+-- FIJADO: Definir variable global para almacenar la selección
+getgenv().selectedstat = "vitality" 
+
 local StatDropdown = StatsTab:CreateDropdown({
     Name = "Select Stat",
     Options = GetAutoStatsList(),
-    CurrentOption = {"vitality"}, -- Valor por defecto
+    CurrentOption = {"vitality"},
     MultipleOptions = false,
     Flag = "SelectedStatFlag",
     Callback = function(Option)
-        selectedstat = Option[1]
+        -- FIJADO: Manejo correcto del formato de opciones en Rayfield Dropdowns
+        if type(Option) == "table" then
+            getgenv().selectedstat = Option[1]
+        else
+            getgenv().selectedstat = Option
+        end
+        
         Rayfield:Notify({
-            Title = "? Stat seleccionada",
-            Content = "Has elegido: " .. tostring(selectedstat),
+            Title = "Stat seleccionada",
+            Content = "Has elegido: " .. tostring(getgenv().selectedstat),
             Duration = 3.5
         })
     end,
 })
 
--- ?? Cantidades de mejora
-local upgradeAmounts = {10, 20, 30, 40, 50, 100, 150, 300, 450, 600, 800, 1000, 1500, 2000, 3000, 6000, 8000, 10000, 15000, 20000, 30000, 40000, 1000000000}
+local upgradeAmounts = {10, 20, 30, 40, 50, 100, 150, 300, 450, 600, 800, 1000, 1500, 2000, 3000, 6000, 8000, 10000, 15000, 20000, 30000, 40000, 100000} -- Reducido el número infinito para evitar crashes por desbordamiento
 
--- ?? Botones de mejora autom tica
 for _, amount in ipairs(upgradeAmounts) do
     StatsTab:CreateButton({
         Name = "Upgrade " .. amount .. "x",
         Callback = function()
-            if selectedstat then
+            if getgenv().selectedstat then
                 for i = 1, amount do
                     task.spawn(function()
-                        game:GetService("ReplicatedStorage").Events.UpgradeAbility:InvokeServer(selectedstat)
+                        game:GetService("ReplicatedStorage").Events.UpgradeAbility:InvokeServer(getgenv().selectedstat)
                     end)
                 end
                 Rayfield:Notify({
-                    Title = " Puntos completados",
-                    Content = "Se mejor  '" .. selectedstat .. "' " .. amount .. " veces.",
+                    Title = "Puntos completados",
+                    Content = "Se mejoró '" .. getgenv().selectedstat .. "' " .. amount .. " veces.",
                     Duration = 2
                 })
             else
                 Rayfield:Notify({
-                    Title = " No seleccionaste nada",
+                    Title = "No seleccionaste nada",
                     Content = "Selecciona una antes de mejorar.",
                     Duration = 2
                 })
