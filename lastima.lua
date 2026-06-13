@@ -52,12 +52,12 @@ Rayfield:Notify({
 })
 
 -- ====================================================================
--- PESTAÑA MAIN FARM (ORBS TWEEN + FPS ORIGINAL RESTAURADO)
+-- PESTAÑA MAIN FARM 
 -- ====================================================================
 local MainTab = Window:CreateTab("MAIN FARM")
 local MainSection = MainTab:CreateSection("MAIN FARM HERE")
 
--- ORB FARM V3 (MÉTODO TWEEN - VUELA HACIA LAS ORBES PARA QUE LAS CUENTE)
+-- ORB FARM V3 (MÉTODO TWEEN)
 MainTab:CreateToggle({
     Name = "Orb Farm (Tween Mode)",
     CurrentValue = false,
@@ -71,7 +71,6 @@ MainTab:CreateToggle({
                 local TweenService = game:GetService("TweenService")
                 local lp = Players.LocalPlayer
                 
-                -- Buscar la carpeta de las orbes
                 local orbsFolder = workspace:FindFirstChild("ExperienceOrbs") or workspace:FindFirstChild("Orbs") or workspace:FindFirstChild("AllOrbs")
                 if not orbsFolder then
                     for _, obj in ipairs(workspace:GetChildren()) do
@@ -96,20 +95,18 @@ MainTab:CreateToggle({
                                 if not getgenv().OrbFarm then break end
                                 local orb = orbs[i]
                                 
-                                if orb:IsA("BasePart") and orb.PrimaryPart or orb:IsA("BasePart") then
-                                    -- Crear un vuelo rápido (Tween) hacia la orbe para que el servidor la valide legítimamente
+                                if orb:IsA("BasePart") then
                                     local distancia = (orb.Position - root.Position).Magnitude
-                                    if distancia < 1500 then -- Filtro de distancia para no buguearse
-                                        local velocidad = 150 -- Velocidad regulada para evitar kickeos
+                                    if distancia < 1500 then
+                                        local velocidad = 150
                                         local tiempo = distancia / velocidad
                                         
                                         local info = TweenInfo.new(tiempo, Enum.EasingStyle.Linear)
                                         local tween = TweenService:Create(root, info, {CFrame = orb.CFrame})
                                         
                                         tween:Play()
-                                        tween.Completed:Wait() -- Esperar a llegar a la orbe
+                                        tween.Completed:Wait()
                                         
-                                        -- Activar el toque por si acaso
                                         firetouchinterest(root, orb, 0)
                                         task.wait(0.05)
                                         firetouchinterest(root, orb, 1)
@@ -124,18 +121,26 @@ MainTab:CreateToggle({
     end
 })
 
--- FARM24 / FPS BOOST (SISTEMA ORIGINAL RESTAURADO Y CORREGIDO)
+-- FARM24 / EXTRA FPS BOOSTER TERMINAL (MÉTODO ULTRA RENDIMIENTO)
 MainTab:CreateButton({
-    Name = "farm24",
+    Name = "farm24 (Modo Dios FPS)",
     Callback = function()
-        local g = game
+        -- 1. APAGAR PROCESAMIENTO GRÁFICO 3D (Máximo ahorro de recursos del procesador/GPU)
+        pcall(function()
+            game:GetService("RunService"):Set3DRenderingEnabled(false)
+        end)
+
+        -- 2. LIMPIEZA DE BASURA EN MEMORIA RAM
+        setfpscap(30) -- Limita a 30 FPS internos para que tu PC no trabaje de más en segundo plano
+        gcinfo() -- Recolector de basura nativo
+
+        -- 3. ELIMINACIÓN RADICAL DE ELEMENTOS VISUALES ORIGINALES
         local w = workspace
-        local l = g:GetService("Lighting")
+        local l = game:GetService("Lighting")
 
         w.LevelOfDetail = Enum.LevelOfDetail.Low
-        
-        local t = w:FindFirstChildOfClass("Terrain")
-        if t then
+        if w:FindFirstChildOfClass("Terrain") then
+            local t = w:FindFirstChildOfClass("Terrain")
             t.WaterWaveSize = 0
             t.WaterWaveSpeed = 0
             t.WaterReflectance = 0
@@ -155,42 +160,22 @@ MainTab:CreateButton({
 
         task.spawn(function()
             local descendants = w:GetDescendants()
-            
             for i = 1, #descendants do
                 local v = descendants[i]
-                
                 if v:IsA("BasePart") then
                     v.Material = Enum.Material.SmoothPlastic
                     v.Reflectance = 0
                     v.CastShadow = false
-                    if v:IsA("MeshPart") then
-                        v.RenderFidelity = Enum.RenderFidelity.Performance
-                    end
-                    
-                elseif v:IsA("Decal") or v:IsA("Texture") or v:IsA("Beam") or v:IsA("ShirtGraphic") then
-                    v:Destroy() 
-                    
-                elseif v:IsA("ParticleEmitter") or v:IsA("Trail") or v:IsA("Smoke") or v:IsA("Fire") or v:IsA("Sparkles") then
+                elseif v:IsA("Decal") or v:IsA("Texture") or v:IsA("Beam") or v:IsA("ParticleEmitter") or v:IsA("Trail") then
                     v:Destroy()
                 end
-                
                 if i % 1000 == 0 then task.wait() end
             end
         end)
 
-        workspace.DescendantAdded:Connect(function(v)
-            if v:IsA("Decal") or v:IsA("Texture") or v:IsA("ParticleEmitter") or v:IsA("Trail") or v:IsA("Smoke") or v:IsA("Fire") or v:IsA("Sparkles") then
-                task.defer(v.Destroy, v)
-            elseif v:IsA("BasePart") then
-                v.Material = Enum.Material.SmoothPlastic
-                v.Reflectance = 0
-                v.CastShadow = false
-            end
-        end)
-
         Rayfield:Notify({
-            Title = "age of mierda",
-            Content = "esto elimina cualquier cosa para que tu tostadora dure farmeando",
+            Title = "Modo Tostadora Supremo",
+            Content = "Renderizado 3D desactivado. Tu juego ahora consume el mínimo posible.",
             Duration = 10
         })
     end,
@@ -355,7 +340,7 @@ MainTab:CreateButton({
     end,
 })
 
--- SPAWN POINT UI v2.1 LITE
+-- SPAWN POINT UI
 MainTab:CreateButton({
     Name = "Spawn Point UI v2.1 lite",
     Callback = function()
@@ -531,7 +516,7 @@ MainTab:CreateButton({
             Rayfield:Notify({
                 Title = "Anti-AFK",
                 Content = "Desactivado.",
-                Duration = 9999999999999999999999999999
+                Duration = 6
             })
         end
     end,
