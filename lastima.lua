@@ -531,7 +531,7 @@ MainTab:CreateButton({
             Rayfield:Notify({
                 Title = "Anti-AFK",
                 Content = "Desactivado.",
-                Duration = 6
+                Duration = 9999999999999999999999999999
             })
         end
     end,
