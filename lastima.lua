@@ -52,52 +52,43 @@ Rayfield:Notify({
 })
 
 -- ====================================================================
--- PESTAÑA MAIN FARM (ORBS Y FPS ARREGLADOS + KILL AURA + TELEPORT)
+-- PESTAÑA MAIN FARM (ORBS TWEEN + FPS ORIGINAL RESTAURADO)
 -- ====================================================================
 local MainTab = Window:CreateTab("MAIN FARM")
 local MainSection = MainTab:CreateSection("MAIN FARM HERE")
 
--- ORB FARM (MÉTODO AGRESIVO Y RE-DISEÑADO)
+-- ORB FARM V3 (MÉTODO TWEEN - VUELA HACIA LAS ORBES PARA QUE LAS CUENTE)
 MainTab:CreateToggle({
-    Name = "Orb Farm",
+    Name = "Orb Farm (Tween Mode)",
     CurrentValue = false,
-    Flag = "OrbFarmFixed",
+    Flag = "OrbTweenFarm",
     Callback = function(v)
         getgenv().OrbFarm = v
         
         if getgenv().OrbFarm then
             task.spawn(function()
                 local Players = game:GetService("Players")
+                local TweenService = game:GetService("TweenService")
                 local lp = Players.LocalPlayer
                 
-                local posiblesCarpetas = {
-                    workspace:FindFirstChild("ExperienceOrbs"),
-                    workspace:FindFirstChild("Orbs"),
-                    workspace:FindFirstChild("AllOrbs"),
-                    workspace:FindFirstChild("Map") and workspace.Map:FindFirstChild("Orbs")
-                }
+                -- Buscar la carpeta de las orbes
+                local orbsFolder = workspace:FindFirstChild("ExperienceOrbs") or workspace:FindFirstChild("Orbs") or workspace:FindFirstChild("AllOrbs")
+                if not orbsFolder then
+                    for _, obj in ipairs(workspace:GetChildren()) do
+                        if obj.Name:lower():find("orb") or obj.Name:lower():find("experience") then
+                            orbsFolder = obj
+                            break
+                        end
+                    end
+                end
 
                 while getgenv().OrbFarm do
-                    task.wait(0.05) 
-                    
+                    task.wait(0.1)
                     pcall(function()
                         local char = lp.Character
                         local root = char and char:FindFirstChild("HumanoidRootPart")
-                        if not root then return end
-
-                        local orbsFolder = nil
-                        for _, folder in ipairs(posiblesCarpetas) do
-                            if folder then orbsFolder = folder; break end
-                        end
-                        
-                        if not orbsFolder then
-                            for _, obj in ipairs(workspace:GetChildren()) do
-                                if obj.Name:lower():find("orb") or obj.Name:lower():find("experience") then
-                                    orbsFolder = obj
-                                    break
-                                end
-                            end
-                        end
+                        local humanoid = char and char:FindFirstChildOfClass("Humanoid")
+                        if not root or (humanoid and humanoid.Health <= 0) then return end
 
                         if orbsFolder then
                             local orbs = orbsFolder:GetChildren()
@@ -105,14 +96,23 @@ MainTab:CreateToggle({
                                 if not getgenv().OrbFarm then break end
                                 local orb = orbs[i]
                                 
-                                if orb:IsA("BasePart") then
-                                    orb.CanCollide = false
-                                    orb.CFrame = root.CFrame
-                                    
-                                    local touch = orb:FindFirstChildWhichIsA("TouchInterest", true)
-                                    if touch then
+                                if orb:IsA("BasePart") and orb.PrimaryPart or orb:IsA("BasePart") then
+                                    -- Crear un vuelo rápido (Tween) hacia la orbe para que el servidor la valide legítimamente
+                                    local distancia = (orb.Position - root.Position).Magnitude
+                                    if distancia < 1500 then -- Filtro de distancia para no buguearse
+                                        local velocidad = 150 -- Velocidad regulada para evitar kickeos
+                                        local tiempo = distancia / velocidad
+                                        
+                                        local info = TweenInfo.new(tiempo, Enum.EasingStyle.Linear)
+                                        local tween = TweenService:Create(root, info, {CFrame = orb.CFrame})
+                                        
+                                        tween:Play()
+                                        tween.Completed:Wait() -- Esperar a llegar a la orbe
+                                        
+                                        -- Activar el toque por si acaso
                                         firetouchinterest(root, orb, 0)
-                                        task.defer(firetouchinterest, root, orb, 1)
+                                        task.wait(0.05)
+                                        firetouchinterest(root, orb, 1)
                                     end
                                 end
                             end
@@ -124,14 +124,14 @@ MainTab:CreateToggle({
     end
 })
 
--- FARM24 / FPS BOOST REMASTERIZADO (MÁXIMO COMODÍN CONTRA LAG)
+-- FARM24 / FPS BOOST (SISTEMA ORIGINAL RESTAURADO Y CORREGIDO)
 MainTab:CreateButton({
-    Name = "farm24 (Super FPS Boost)",
+    Name = "farm24",
     Callback = function()
-        local l = game:GetService("Lighting")
+        local g = game
         local w = workspace
+        local l = g:GetService("Lighting")
 
-        settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
         w.LevelOfDetail = Enum.LevelOfDetail.Low
         
         local t = w:FindFirstChildOfClass("Terrain")
@@ -148,39 +148,50 @@ MainTab:CreateButton({
         l.Brightness = 0
         
         for _, effect in ipairs(l:GetChildren()) do
-            if effect:IsA("PostEffect") or effect:IsA("BlurEffect") or effect:IsA("SunRaysEffect") or effect:IsA("BloomEffect") or effect:IsA("ColorCorrectionEffect") then
-                effect.Enabled = false
+            if effect:IsA("PostEffect") or effect:IsA("BlurEffect") or effect:IsA("SunRaysEffect") or effect:IsA("BloomEffect") or effect:IsA("ColorCorrectionEffect") or effect:IsA("DepthOfFieldEffect") then
+                effect:Destroy()
             end
         end
 
         task.spawn(function()
-            local desc = w:GetDescendants()
-            for i = 1, #desc do
-                local v = desc[i]
-                if v:IsA("BasePart") and not v:IsA("Terrain") then
+            local descendants = w:GetDescendants()
+            
+            for i = 1, #descendants do
+                local v = descendants[i]
+                
+                if v:IsA("BasePart") then
                     v.Material = Enum.Material.SmoothPlastic
                     v.Reflectance = 0
                     v.CastShadow = false
-                elseif v:IsA("Decal") or v:IsA("Texture") or v:IsA("ParticleEmitter") or v:IsA("Trail") then
+                    if v:IsA("MeshPart") then
+                        v.RenderFidelity = Enum.RenderFidelity.Performance
+                    end
+                    
+                elseif v:IsA("Decal") or v:IsA("Texture") or v:IsA("Beam") or v:IsA("ShirtGraphic") then
+                    v:Destroy() 
+                    
+                elseif v:IsA("ParticleEmitter") or v:IsA("Trail") or v:IsA("Smoke") or v:IsA("Fire") or v:IsA("Sparkles") then
                     v:Destroy()
                 end
-                if i % 500 == 0 then task.wait() end
+                
+                if i % 1000 == 0 then task.wait() end
             end
         end)
 
-        w.DescendantAdded:Connect(function(v)
-            if v:IsA("BasePart") then
-                v.Material = Enum.Material.SmoothPlastic
-                v.CastShadow = false
-            elseif v:IsA("Decal") or v:IsA("Texture") or v:IsA("ParticleEmitter") or v:IsA("Trail") then
+        workspace.DescendantAdded:Connect(function(v)
+            if v:IsA("Decal") or v:IsA("Texture") or v:IsA("ParticleEmitter") or v:IsA("Trail") or v:IsA("Smoke") or v:IsA("Fire") or v:IsA("Sparkles") then
                 task.defer(v.Destroy, v)
+            elseif v:IsA("BasePart") then
+                v.Material = Enum.Material.SmoothPlastic
+                v.Reflectance = 0
+                v.CastShadow = false
             end
         end)
 
         Rayfield:Notify({
-            Title = "FPS Optimizado",
-            Content = "Texturas eliminadas y nivel de calidad al mínimo para farmeo 24/7.",
-            Duration = 5
+            Title = "age of mierda",
+            Content = "esto elimina cualquier cosa para que tu tostadora dure farmeando",
+            Duration = 10
         })
     end,
 })
