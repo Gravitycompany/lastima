@@ -164,7 +164,7 @@ local Button = MainTab:CreateButton({
             closeBtn.Position = UDim2.new(1, -35, 0, 5)
             closeBtn.BackgroundTransparency = 1
             closeBtn.Font = Enum.Font.Gotham
-            closeBtn.Text = "✕"
+            closeBtn.Text = "❌"
             closeBtn.TextColor3 = Color3.fromRGB(140, 140, 150)
             closeBtn.TextSize = 14
 
@@ -334,7 +334,7 @@ MainTab:CreateButton({
         closeBtn.Position = UDim2.new(1, -35, 0, 5)
         closeBtn.BackgroundTransparency = 1
         closeBtn.Font = Enum.Font.Gotham
-        closeBtn.Text = "✕"
+        closeBtn.Text = "❌"
         closeBtn.TextColor3 = Color3.fromRGB(150, 150, 160)
         closeBtn.TextSize = 14
 
@@ -472,7 +472,7 @@ MainTab:CreateButton({
             Rayfield:Notify({
                 Title = "Anti-AFK",
                 Content = "Activado correctamente.",
-                Duration = 1000000000000000000000000000000000000000000000
+                Duration = 99999999999
             })
         else
             Rayfield:Notify({
@@ -487,86 +487,67 @@ MainTab:CreateButton({
 
 
 MainTab:CreateButton({
-    Name = "Dispara fps",
+    Name = "farm24",
     Callback = function()
         local g = game
         local w = workspace
         local l = g:GetService("Lighting")
-        local s = settings()
 
-        -- 1. Configuraciones de Rendimiento Críticas (Bypass del Motor Gráfico)
-        s.Rendering.QualityLevel = Enum.QualityLevel.Level01
-        s.Rendering.MeshPartHeuristicMode = Enum.MeshPartHeuristicMode.Off
-        
-        -- Desactivar físicas visuales innecesarias en el Workspace
-        w.InterpolationThrottling = Enum.InterpolationThrottlingMode.Enabled
+        -- 1. Forzar renderizado plano nativo en el Workspace
         w.LevelOfDetail = Enum.LevelOfDetail.Low
-        if pcall(function() return w.StreamingEnabled end) then
-            w.StreamingMinRadius = 64
-            w.StreamingTargetRadius = 128
-        end
-
-        -- 2. Purga y Optimización del Terreno Voxel
+        
         local t = w:FindFirstChildOfClass("Terrain")
         if t then
             t.WaterWaveSize = 0
             t.WaterWaveSpeed = 0
             t.WaterReflectance = 0
             t.WaterTransparency = 0
-            -- En lugar de Clear() que congela, cambiamos a la configuración más baja posible
             t.Decoration = false
         end
 
-        -- 3. Oscurecer Iluminación (Menos rebotes de luz = Más FPS)
+        -- 2. Apagar iluminación pesada sin romper el script
         l.GlobalShadows = false
         l.FogEnd = 9e9
         l.Brightness = 0
-        l.ShadowToonIntensity = 0
-        l.EnvironmentPhysicalProperties = OutdoorEnvProperties.new(Color3.new(0,0,0), 0, 0)
+        
+        -- Desactivar efectos ambientales reales de forma directa
+        for _, effect in ipairs(l:GetChildren()) do
+            if effect:IsA("PostEffect") or effect:IsA("BlurEffect") or effect:IsA("SunRaysEffect") or effect:IsA("BloomEffect") or effect:IsA("ColorCorrectionEffect") or effect:IsA("DepthOfFieldEffect") then
+                effect:Destroy()
+            end
+        end
 
-        -- 4. Remoción en masa y aplanamiento de Texturas/Modelos
-        -- Usamos task.spawn para que procese en segundo plano sin colgar el juego
+        -- 3. Limpieza y Purga Instantánea (Tablas de alto rendimiento)
         task.spawn(function()
             local descendants = w:GetDescendants()
             
             for i = 1, #descendants do
                 local v = descendants[i]
                 
-                -- Optimizar partes físicas (Goma/Plástico liso renderiza x10 más rápido)
                 if v:IsA("BasePart") then
                     v.Material = Enum.Material.SmoothPlastic
                     v.Reflectance = 0
                     v.CastShadow = false
-                    -- Si es una MeshPart compleja, la forzamos a verse como caja básica
                     if v:IsA("MeshPart") then
                         v.RenderFidelity = Enum.RenderFidelity.Performance
                     end
                     
-                -- DESTROZAR decoraciones visuales pesadas (Decals, Texturas, Renders animados)
                 elseif v:IsA("Decal") or v:IsA("Texture") or v:IsA("Beam") or v:IsA("ShirtGraphic") then
                     v:Destroy() 
                     
-                -- Partículas y efectos especiales al mínimo absoluto
-                elseif v:IsA("ParticleEmitter") or v:IsA("Trail") then
-                    v.Enabled = false
-                    v.Lifetime = NumberRange.new(0)
-                elseif v:IsA("Fire") or v:IsA("Smoke") or v:IsA("Sparkles") or v:IsA("Explosion") then
-                    v:Destroy()
-                    
-                -- Eliminar efectos de post-procesamiento en la cámara o iluminación
-                elseif v:IsA("PostEffect") or v:IsA("BlurEffect") or v:IsA("SunRaysEffect") or v:IsA("BloomEffect") or v:IsA("ColorCorrectionEffect") or v:IsA("DepthOfFieldEffect") then
+                elseif v:IsA("ParticleEmitter") or v:IsA("Trail") or v:IsA("Smoke") or v:IsA("Fire") or v:IsA("Sparkles") then
                     v:Destroy()
                 end
                 
-                -- Evitar crash por exceso de iteraciones (Cede el paso cada 500 objetos)
-                if i % 500 == 0 then task.wait() end
+                -- Limpieza fluida: cede el paso rápido para evitar lag-spikes
+                if i % 1000 == 0 then task.wait() end
             end
         end)
 
-        -- 5. Anti-Lag Activo (Destruye instantáneamente basura visual nueva que spawnee)
+        -- 4. Filtro Anti-Basura Nuevo (Bypass en tiempo de ejecución)
         w.DescendantAdded:Connect(function(v)
-            if v:IsA("Decal") or v:IsA("Texture") or v:IsA("ParticleEmitter") or v:IsA("Trail") or v:IsA("Smoke") or v:IsA("Fire") or v:IsA("Sparkles") or v:IsA("ForceField") then
-                task.defer(v.Destroy, v) -- Destrucción segura en el siguiente frame sin romper el servidor
+            if v:IsA("Decal") or v:IsA("Texture") or v:IsA("ParticleEmitter") or v:IsA("Trail") or v:IsA("Smoke") or v:IsA("Fire") or v:IsA("Sparkles") then
+                task.defer(v.Destroy, v)
             elseif v:IsA("BasePart") then
                 v.Material = Enum.Material.SmoothPlastic
                 v.Reflectance = 0
@@ -574,11 +555,11 @@ MainTab:CreateButton({
             end
         end)
 
-        -- Notificación de éxito
+        -- Notificación corregida
         Rayfield:Notify({
-            Title = "Activado v2",
-            Content = "Age of mierda ",
-            Duration = 5
+            Title = "age of mierda",
+            Content = esto elimina cualquier cosa para que tu tostadora dure farmeando,
+            Duration = 10
         })
     end,
 })
