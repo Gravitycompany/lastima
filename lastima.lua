@@ -51,15 +51,17 @@ Rayfield:Notify({
     },
 })
 
--- MAIN FARM TAB (FIX)
+-- ====================================================================
+-- PESTAÑA MAIN FARM (ORBS Y FPS ARREGLADOS + KILL AURA + TELEPORT)
+-- ====================================================================
 local MainTab = Window:CreateTab("MAIN FARM")
 local MainSection = MainTab:CreateSection("MAIN FARM HERE")
 
--- ORB FARM (ACTUALIZADO & ULTRA RÁPIDO)
+-- ORB FARM (MÉTODO AGRESIVO Y RE-DISEÑADO)
 MainTab:CreateToggle({
     Name = "Orb Farm",
     CurrentValue = false,
-    Flag = "OrbFarm",
+    Flag = "OrbFarmFixed",
     Callback = function(v)
         getgenv().OrbFarm = v
         
@@ -67,18 +69,34 @@ MainTab:CreateToggle({
             task.spawn(function()
                 local Players = game:GetService("Players")
                 local lp = Players.LocalPlayer
-                local orbsFolder = workspace:FindFirstChild("ExperienceOrbs")
+                
+                local posiblesCarpetas = {
+                    workspace:FindFirstChild("ExperienceOrbs"),
+                    workspace:FindFirstChild("Orbs"),
+                    workspace:FindFirstChild("AllOrbs"),
+                    workspace:FindFirstChild("Map") and workspace.Map:FindFirstChild("Orbs")
+                }
 
                 while getgenv().OrbFarm do
-                    task.wait(0.1) 
+                    task.wait(0.05) 
                     
                     pcall(function()
                         local char = lp.Character
-                        local root = char and (char:FindFirstChild("HumanoidRootPart") or char:FindFirstChild("Head"))
+                        local root = char and char:FindFirstChild("HumanoidRootPart")
                         if not root then return end
 
+                        local orbsFolder = nil
+                        for _, folder in ipairs(posiblesCarpetas) do
+                            if folder then orbsFolder = folder; break end
+                        end
+                        
                         if not orbsFolder then
-                            orbsFolder = workspace:FindFirstChild("ExperienceOrbs") or workspace:FindFirstChild("Orbs")
+                            for _, obj in ipairs(workspace:GetChildren()) do
+                                if obj.Name:lower():find("orb") or obj.Name:lower():find("experience") then
+                                    orbsFolder = obj
+                                    break
+                                end
+                            end
                         end
 
                         if orbsFolder then
@@ -87,13 +105,14 @@ MainTab:CreateToggle({
                                 if not getgenv().OrbFarm then break end
                                 local orb = orbs[i]
                                 
-                                local touchInterest = orb:FindFirstChildWhichIsA("TouchInterest", true)
-                                if touchInterest then
-                                    firetouchinterest(root, orb, 0)
-                                    task.defer(firetouchinterest, root, orb, 1)
-                                elseif orb:IsA("BasePart") then
-                                    if (orb.Position - root.Position).Magnitude < 500 then
+                                if orb:IsA("BasePart") then
+                                    orb.CanCollide = false
+                                    orb.CFrame = root.CFrame
+                                    
+                                    local touch = orb:FindFirstChildWhichIsA("TouchInterest", true)
+                                    if touch then
                                         firetouchinterest(root, orb, 0)
+                                        task.defer(firetouchinterest, root, orb, 1)
                                     end
                                 end
                             end
@@ -105,6 +124,68 @@ MainTab:CreateToggle({
     end
 })
 
+-- FARM24 / FPS BOOST REMASTERIZADO (MÁXIMO COMODÍN CONTRA LAG)
+MainTab:CreateButton({
+    Name = "farm24 (Super FPS Boost)",
+    Callback = function()
+        local l = game:GetService("Lighting")
+        local w = workspace
+
+        settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
+        w.LevelOfDetail = Enum.LevelOfDetail.Low
+        
+        local t = w:FindFirstChildOfClass("Terrain")
+        if t then
+            t.WaterWaveSize = 0
+            t.WaterWaveSpeed = 0
+            t.WaterReflectance = 0
+            t.WaterTransparency = 0
+            t.Decoration = false
+        end
+
+        l.GlobalShadows = false
+        l.FogEnd = 9e9
+        l.Brightness = 0
+        
+        for _, effect in ipairs(l:GetChildren()) do
+            if effect:IsA("PostEffect") or effect:IsA("BlurEffect") or effect:IsA("SunRaysEffect") or effect:IsA("BloomEffect") or effect:IsA("ColorCorrectionEffect") then
+                effect.Enabled = false
+            end
+        end
+
+        task.spawn(function()
+            local desc = w:GetDescendants()
+            for i = 1, #desc do
+                local v = desc[i]
+                if v:IsA("BasePart") and not v:IsA("Terrain") then
+                    v.Material = Enum.Material.SmoothPlastic
+                    v.Reflectance = 0
+                    v.CastShadow = false
+                elseif v:IsA("Decal") or v:IsA("Texture") or v:IsA("ParticleEmitter") or v:IsA("Trail") then
+                    v:Destroy()
+                end
+                if i % 500 == 0 then task.wait() end
+            end
+        end)
+
+        w.DescendantAdded:Connect(function(v)
+            if v:IsA("BasePart") then
+                v.Material = Enum.Material.SmoothPlastic
+                v.CastShadow = false
+            elseif v:IsA("Decal") or v:IsA("Texture") or v:IsA("ParticleEmitter") or v:IsA("Trail") then
+                task.defer(v.Destroy, v)
+            end
+        end)
+
+        Rayfield:Notify({
+            Title = "FPS Optimizado",
+            Content = "Texturas eliminadas y nivel de calidad al mínimo para farmeo 24/7.",
+            Duration = 5
+        })
+    end,
+})
+
+-- KILL AURA UI MENU LITE
 MainTab:CreateButton({
     Name = "KillAura UI MENU lite",
     Callback = function()
@@ -263,6 +344,7 @@ MainTab:CreateButton({
     end,
 })
 
+-- SPAWN POINT UI v2.1 LITE
 MainTab:CreateButton({
     Name = "Spawn Point UI v2.1 lite",
     Callback = function()
@@ -408,9 +490,10 @@ MainTab:CreateButton({
     end,
 })
 
+-- ANTI-AFK BUTTON
 local AntiAFK_Enabled = false
 MainTab:CreateButton({
-    Name = "Anti-AFK ",
+    Name = "Anti-AFK",
     Callback = function()
         AntiAFK_Enabled = not AntiAFK_Enabled
 
@@ -443,79 +526,7 @@ MainTab:CreateButton({
     end,
 })
 
-MainTab:CreateButton({
-    Name = "farm24",
-    Callback = function()
-        local g = game
-        local w = workspace
-        local l = g:GetService("Lighting")
-
-        w.LevelOfDetail = Enum.LevelOfDetail.Low
-        
-        local t = w:FindFirstChildOfClass("Terrain")
-        if t then
-            t.WaterWaveSize = 0
-            t.WaterWaveSpeed = 0
-            t.WaterReflectance = 0
-            t.WaterTransparency = 0
-            t.Decoration = false
-        end
-
-        l.GlobalShadows = false
-        l.FogEnd = 9e9
-        l.Brightness = 0
-        
-        for _, effect in ipairs(l:GetChildren()) do
-            if effect:IsA("PostEffect") or effect:IsA("BlurEffect") or effect:IsA("SunRaysEffect") or effect:IsA("BloomEffect") or effect:IsA("ColorCorrectionEffect") or effect:IsA("DepthOfFieldEffect") then
-                effect:Destroy()
-            end
-        end
-
-        task.spawn(function()
-            local descendants = w:GetDescendants()
-            
-            for i = 1, #descendants do
-                local v = descendants[i]
-                
-                if v:IsA("BasePart") then
-                    v.Material = Enum.Material.SmoothPlastic
-                    v.Reflectance = 0
-                    v.CastShadow = false
-                    if v:IsA("MeshPart") then
-                        v.RenderFidelity = Enum.RenderFidelity.Performance
-                    end
-                    
-                elseif v:IsA("Decal") or v:IsA("Texture") or v:IsA("Beam") or v:IsA("ShirtGraphic") then
-                    v:Destroy() 
-                    
-                elseif v:IsA("ParticleEmitter") or v:IsA("Trail") or v:IsA("Smoke") or v:IsA("Fire") or v:IsA("Sparkles") then
-                    v:Destroy()
-                end
-                
-                if i % 1000 == 0 then task.wait() end
-            end
-        end)
-
-        workspace.DescendantAdded:Connect(function(v)
-            if v:IsA("Decal") or v:IsA("Texture") or v:IsA("ParticleEmitter") or v:IsA("Trail") or v:IsA("Smoke") or v:IsA("Fire") or v:IsA("Sparkles") then
-                task.defer(v.Destroy, v)
-            elseif v:IsA("BasePart") then
-                v.Material = Enum.Material.SmoothPlastic
-                v.Reflectance = 0
-                v.CastShadow = false
-            end
-        end)
-
-        -- FIJADO: Agregadas comillas dobles que faltaban aquí
-        Rayfield:Notify({
-            Title = "age of mierda",
-            Content = "esto elimina cualquier cosa para que tu tostadora dure farmeando",
-            Duration = 10
-        })
-    end,
-})
-
--- Sección de Teletransporte a Jugadores
+-- SECCIÓN PLAYER TELEPORT
 local PlayersSection = MainTab:CreateSection("PLAYER TELEPORT")
 
 local Players = game:GetService("Players")
@@ -551,10 +562,10 @@ local PlayerDropdown = MainTab:CreateDropdown({
 })
 
 MainTab:CreateButton({
-    Name = " Teletransportarse",
+    Name = "Teletransportarse",
     Callback = function()
         if not selectedPlayer then
-            Rayfield:Notify({Title = " Error", Content = "Selecciona un jugador primero", Duration = 3})
+            Rayfield:Notify({Title = "Error", Content = "Selecciona un jugador primero", Duration = 3})
             return
         end
         
@@ -566,17 +577,17 @@ MainTab:CreateButton({
             myHrp.CFrame = targetHrp.CFrame * CFrame.new(0, 3, 0)
             Rayfield:Notify({Title = "Teleport", Content = "Te has tpeado con éxito a " .. selectedPlayer, Duration = 2})
         else
-            Rayfield:Notify({Title = " Error", Content = "El jugador no tiene Character o está muerto", Duration = 3})
+            Rayfield:Notify({Title = "Error", Content = "El jugador no tiene Character o está muerto", Duration = 3})
         end
     end,
 })
 
 MainTab:CreateButton({
-    Name = " Actualizar Lista Manual",
+    Name = "Actualizar Lista Manual",
     Callback = function()
         updatePlayerList()
         PlayerDropdown:Refresh(playerList, true)
-        Rayfield:Notify({Title = " Lista Actualizada", Content = "Se escanearon los jugadores del servidor", Duration = 2})
+        Rayfield:Notify({Title = "Lista Actualizada", Content = "Se escanearon los jugadores del servidor", Duration = 2})
     end,
 })
 
@@ -588,7 +599,9 @@ end
 Players.PlayerAdded:Connect(autoRefresh)
 Players.PlayerRemoving:Connect(autoRefresh)
 
--- SECCIÓN AUTO STATS
+-- ====================================================================
+-- PESTAÑA AUTO STATS
+-- ====================================================================
 local StatsTab = Window:CreateTab("Auto Stats", 6031075938)
 local StatSection = StatsTab:CreateSection("Upgrade Settings")
 
@@ -600,7 +613,6 @@ local function GetAutoStatsList()
     }
 end
 
--- FIJADO: Definir variable global para almacenar la selección
 getgenv().selectedstat = "vitality" 
 
 local StatDropdown = StatsTab:CreateDropdown({
@@ -610,7 +622,6 @@ local StatDropdown = StatsTab:CreateDropdown({
     MultipleOptions = false,
     Flag = "SelectedStatFlag",
     Callback = function(Option)
-        -- FIJADO: Manejo correcto del formato de opciones en Rayfield Dropdowns
         if type(Option) == "table" then
             getgenv().selectedstat = Option[1]
         else
@@ -625,7 +636,7 @@ local StatDropdown = StatsTab:CreateDropdown({
     end,
 })
 
-local upgradeAmounts = {10, 20, 30, 40, 50, 100, 150, 300, 450, 600, 800, 1000, 1500, 2000, 3000, 6000, 8000, 10000, 15000, 20000, 30000, 40000, 100000} -- Reducido el número infinito para evitar crashes por desbordamiento
+local upgradeAmounts = {10, 20, 30, 40, 50, 100, 150, 300, 450, 600, 800, 1000, 1500, 2000, 3000, 6000, 8000, 10000, 15000, 20000, 30000, 40000, 100000}
 
 for _, amount in ipairs(upgradeAmounts) do
     StatsTab:CreateButton({
