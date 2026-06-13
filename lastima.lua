@@ -122,7 +122,7 @@ MainTab:CreateToggle({
 })
 
 MainTab:CreateButton({
-    Name = " Dispara tus FPS (Ultra Boost)",
+    Name = " Dispara tus FPS ",
     Callback = function()
         local g = game
         local w = g.Workspace
