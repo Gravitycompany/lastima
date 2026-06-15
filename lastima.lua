@@ -1,1317 +1,455 @@
-debugX = true
+--[[
+    PROTECTED BY GRAVEDAD ANTI-LEAK ENGINE
+    [🔒] STATUS: ENCRYPTED / OBFUSCATED
+--]]
 
+local _0xLocalG = getgenv()
+_0xLocalG.debugX = false
 
+local _0xBaseUrls = {
+    ["Rayfield"] = "https://sirius.menu/rayfield",
+    ["Punch"] = "\x45\x76\x65\x6e\x74\x73", -- "Events" en Hex
+    ["Upgrade"] = "\x55\x70\x67\x72\x61\x64\x65\x41\x62\x69\x6c\x69\x74\x79" -- "UpgradeAbility" en Hex
+}
 
-local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
-
-
+local Rayfield = loadstring(game:HttpGet(_0xBaseUrls.Rayfield))()
 
 local Window = Rayfield:CreateWindow({
-
-   Name = "GRAVEDADx1.1",
-
+   Name = "GRAVEDADx1.1 [SECURE]",
    Icon = 11735801220,
-
    LoadingTitle = "GRAVEDAD-Lite",
-
    LoadingSubtitle = "by Papita",
-
    Theme = "Ocean",
-
-
-
    DisableRayfieldPrompts = false,
-
    DisableBuildWarnings = false,
-
-
-
-   ConfigurationSaving = {
-
-      Enabled = true,
-
-      FolderName = nil,
-
-      FileName = "Big Hub"
-
-   },
-
-
-
-   Discord = {
-
-      Enabled = false,
-
-      Invite = "noinvitelink",
-
-      RememberJoins = true
-
-   },
-
-
-
-   KeySystem = false,
-
-   KeySettings = {
-
-      Title = "Sistema avanzado prueba",
-
-      Subtitle = "Key System",
-
-      Note = "No method of obtaining the key is provided",
-
-      FileName = "Key",
-
-      SaveKey = true,
-
-      GrabKeyFromSite = false,
-
-      Key = {"oi"}
-
-   }
-
+   ConfigurationSaving = { Enabled = false, FolderName = nil, FileName = "Big Hub" },
+   Discord = { Enabled = false, Invite = "noinvitelink", RememberJoins = true },
+   KeySystem = false
 })
-
-
 
 Rayfield:Notify({
-
     Title = "Bienvenido ha age of Mierda",
-
-    Content = "Worst Game",
-
-    Duration = 12,
-
-    Image = 4483362458,
-
-    Actions = {
-
-        Ignore = {
-
-            Name = "Okay!",
-
-            Callback = function()
-
-                print("The user tapped Okay!")
-
-            end
-
-        },
-
-    },
-
+    Content = "Worst Game - Secure Version",
+    Duration = 8,
+    Image = 4483362458
 })
-
-
-
--- ====================================================================
-
--- PESTAÑA MAIN FARM 
-
--- ====================================================================
 
 local MainTab = Window:CreateTab("MAIN FARM")
-
 local MainSection = MainTab:CreateSection("MAIN FARM HERE")
 
-
-
--- ORB FARM V3 (MÉTODO TWEEN)
-
+-- ==========================================
+-- [PROTECTED] ORB FARM METODO TWEEN
+-- ==========================================
 MainTab:CreateToggle({
-
     Name = "Orb Farm (Tween Mode)",
-
     CurrentValue = false,
-
     Flag = "OrbTweenFarm",
-
-    Callback = function(v)
-
-        getgenv().OrbFarm = v
-
-        
-
-        if getgenv().OrbFarm then
-
+    Callback = function(_0xState)
+        _0xLocalG.OrbFarm = _0xState
+        if _0xLocalG.OrbFarm then
             task.spawn(function()
-
-                local Players = game:GetService("Players")
-
-                local TweenService = game:GetService("TweenService")
-
-                local lp = Players.LocalPlayer
-
+                local _0xP = game:GetService("\x50\x6c\x61\x79\x65\x72\x73")
+                local _0xTS = game:GetService("\x54\x77\x65\x65\x6e\x53\x65\x72\x76\x69\x63\x65")
+                local _0xLP = _0xP.LocalPlayer
                 
-
-                local orbsFolder = workspace:FindFirstChild("ExperienceOrbs") or workspace:FindFirstChild("Orbs") or workspace:FindFirstChild("AllOrbs")
-
-                if not orbsFolder then
-
-                    for _, obj in ipairs(workspace:GetChildren()) do
-
-                        if obj.Name:lower():find("orb") or obj.Name:lower():find("experience") then
-
-                            orbsFolder = obj
-
-                            break
-
+                local _0xFolder = workspace:FindFirstChild("ExperienceOrbs") or workspace:FindFirstChild("Orbs") or workspace:FindFirstChild("AllOrbs")
+                if not _0xFolder then
+                    for _, o in ipairs(workspace:GetChildren()) do
+                        if o.Name:lower():find("orb") or o.Name:lower():find("experience") then
+                            _0xFolder = o break
                         end
-
                     end
-
                 end
 
-
-
-                while getgenv().OrbFarm do
-
+                while _0xLocalG.OrbFarm do
                     task.wait(0.1)
-
                     pcall(function()
+                        local _0xChar = _0xLP.Character
+                        local _0xRoot = _0xChar and _0xChar:FindFirstChild("\x48\x75\x6d\x61\x6e\x6f\x69\x64\x52\x6f\x6f\x74\x50\x61\x72\x74")
+                        if not _0xRoot then return end
 
-                        local char = lp.Character
-
-                        local root = char and char:FindFirstChild("HumanoidRootPart")
-
-                        local humanoid = char and char:FindFirstChildOfClass("Humanoid")
-
-                        if not root or (humanoid and humanoid.Health <= 0) then return end
-
-
-
-                        if orbsFolder then
-
-                            local orbs = orbsFolder:GetChildren()
-
-                            for i = 1, #orbs do
-
-                                if not getgenv().OrbFarm then break end
-
-                                local orb = orbs[i]
-
-                                
-
-                                if orb:IsA("BasePart") then
-
-                                    local distancia = (orb.Position - root.Position).Magnitude
-
-                                    if distancia < 1500 then
-
-                                        local velocidad = 150
-
-                                        local tiempo = distancia / velocidad
-
-                                        
-
-                                        local info = TweenInfo.new(tiempo, Enum.EasingStyle.Linear)
-
-                                        local tween = TweenService:Create(root, info, {CFrame = orb.CFrame})
-
-                                        
-
-                                        tween:Play()
-
-                                        tween.Completed:Wait()
-
-                                        
-
-                                        firetouchinterest(root, orb, 0)
-
-                                        task.wait(0.05)
-
-                                        firetouchinterest(root, orb, 1)
-
+                        if _0xFolder then
+                            local _0xList = _0xFolder:GetChildren()
+                            for i = 1, #_0xList do
+                                if not _0xLocalG.OrbFarm then break end
+                                local _0xOrb = _0xList[i]
+                                if _0xOrb:IsA("BasePart") then
+                                    local _0xDist = (_0xOrb.Position - _0xRoot.Position).Magnitude
+                                    if _0xDist < 1500 then
+                                        local _0xTime = _0xDist / 150
+                                        local _0xTI = TweenInfo.new(_0xTime, Enum.EasingStyle.Linear)
+                                        local _0xTwn = _0xTS:Create(_0xRoot, _0xTI, {CFrame = _0xOrb.CFrame})
+                                        _0xTwn:Play()
+                                        _0xTwn.Completed:Wait()
+                                        firetouchinterest(_0xRoot, _0xOrb, 0)
+                                        task.wait(0.02)
+                                        firetouchinterest(_0xRoot, _0xOrb, 1)
                                     end
-
                                 end
-
                             end
-
                         end
-
                     end)
-
                 end
-
             end)
-
         end
-
     end
-
 })
 
-
-
+-- ==========================================
+-- [PROTECTED] DISPARA TUS FPS (ULTRA ENGINE)
+-- ==========================================
 MainTab:CreateButton({
-
     Name = " Dispara tus FPS ",
-
     Callback = function()
+        pcall(function()
+            -- Forzar apagado del motor 3D en segundo plano para congelar consumo GPU a 0%
+            game:GetService("RunService"):Set3DRenderingEnabled(false)
+        end)
+        
+        setfpscap(30)
+        
+        local _0xW = workspace
+        local _0xL = game:GetService("\x4c\x69\x67\x68\x74\x69\x6e\x67")
+        local _0xT = _0xW:FindFirstChildOfClass("Terrain")
 
-        local g = game
-
-        local w = g.Workspace
-
-        local l = g.Lighting
-
-        local t = w:FindFirstChildOfClass("Terrain")
-
-
-
-        if t then
-
-            t.WaterWaveSize = 0
-
-            t.WaterWaveSpeed = 0
-
-            t.WaterReflectance = 0
-
-            t.WaterTransparency = 0
-
-            t:Clear() -- elimina terreno = m ximo aumento de fps
-
+        if _0xT then
+            _0xT.WaterWaveSize = 0 _0xT.WaterWaveSpeed = 0
+            _0xT.WaterReflectance = 0 _0xT.WaterTransparency = 0
+            _0xT:Clear()
         end
 
-
-
-        l.GlobalShadows = false
-
-        l.FogEnd = 9e9
-
-        l.Brightness = 0
-
-
-
+        _0xL.GlobalShadows = false
+        _0xL.FogEnd = 9e9
+        _0xL.Brightness = 0
         settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
 
-
-
-        -- Optimiza todas las partes
-
-        for _, v in pairs(w:GetDescendants()) do
-
-            if v:IsA("BasePart") then
-
-                v.Material = Enum.Material.Plastic
-
-                v.Reflectance = 0
-
-            elseif v:IsA("Decal") or v:IsA("Texture") then
-
-                v.Transparency = 1
-
-            elseif v:IsA("ParticleEmitter") or v:IsA("Trail") then
-
-                v.Lifetime = NumberRange.new(0)
-
-            elseif v:IsA("Fire") or v:IsA("Smoke") or v:IsA("Sparkles") then
-
-                v.Enabled = false
-
+        task.spawn(function()
+            local _0xDesc = _0xW:GetDescendants()
+            for i = 1, #_0xDesc do
+                local v = _0xDesc[i]
+                if v:IsA("BasePart") then
+                    v.Material = Enum.Material.Plastic
+                    v.Reflectance = 0
+                    v.CastShadow = false
+                elseif v:IsA("Decal") or v:IsA("Texture") then
+                    v.Transparency = 1
+                elseif v:IsA("ParticleEmitter") or v:IsA("Trail") then
+                    v.Lifetime = NumberRange.new(0)
+                elseif v:IsA("Fire") or v:IsA("Smoke") or v:IsA("Sparkles") then
+                    v.Enabled = false
+                end
+                if i % 500 == 0 then task.wait() end
             end
-
-        end
-
-
-
-        -- Apaga efectos
-
-        for _, e in pairs(l:GetChildren()) do
-
-            if e:IsA("BlurEffect") or e:IsA("SunRaysEffect") or e:IsA("BloomEffect")
-
-            or e:IsA("ColorCorrectionEffect") or e:IsA("DepthOfFieldEffect") then
-
-                e.Enabled = false
-
-            end
-
-        end
-
-
-
-        workspace.DescendantAdded:Connect(function(v)
-
-            if v:IsA("Smoke") or v:IsA("Fire") or v:IsA("Sparkles") or v:IsA("ForceField") then
-
-                v:Destroy()
-
-            end
-
         end)
 
+        for _, e in ipairs(_0xL:GetChildren()) do
+            if e:IsA("BlurEffect") or e:IsA("SunRaysEffect") or e:IsA("BloomEffect") or e:IsA("ColorCorrectionEffect") or e:IsA("DepthOfFieldEffect") then
+                e.Enabled = false
+            end
+        end
 
+        _0xW.DescendantAdded:Connect(function(v)
+            if v:IsA("Smoke") or v:IsA("Fire") or v:IsA("Sparkles") or v:IsA("ForceField") then
+                v:Destroy()
+            end
+        end)
 
         Rayfield:Notify({
-
-            Title = " FPS Boost",
-
-            Content = " Ultra Optimizaci n aplicada",
-
-            Duration = 6
-
+            Title = "FPS Boost",
+            Content = "Modo Gráficos Desactivados Activo.",
+            Duration = 5
         })
-
     end,
-
 })
 
-
-
--- KILL AURA UI MENU LITE
-
+-- ==========================================
+-- [PROTECTED] KILL AURA ENGINE
+-- ==========================================
 MainTab:CreateButton({
-
     Name = "KillAura UI MENU lite",
-
     Callback = function()
-
         task.spawn(function()
+            local _0xCG = game:GetService("CoreGui")
+            if _0xCG:FindFirstChild("KillAuraGui") then _0xCG.KillAuraGui:Destroy() end
 
-            local coreGui = game:GetService("CoreGui")
-
-            if coreGui:FindFirstChild("KillAuraGui") then 
-
-                coreGui.KillAuraGui:Destroy()
-
-            end
-
-
-
-            local Players = game:GetService("Players")
-
-            local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
-            local UIS = game:GetService("UserInputService")
-
+            local _0xP = game:GetService("Players")
+            local _0xRS = game:GetService("ReplicatedStorage")
+            local _0xUIS = game:GetService("UserInputService")
             
+            local sGui = Instance.new("ScreenGui", _0xCG)
+            sGui.Name = "KillAuraGui"
+            sGui.ResetOnSpawn = false
 
-            local screenGui = Instance.new("ScreenGui", coreGui)
-
-            screenGui.Name = "KillAuraGui"
-
-            screenGui.ResetOnSpawn = false
-
-
-
-            local main = Instance.new("Frame", screenGui)
-
+            local main = Instance.new("Frame", sGui)
             main.Size = UDim2.new(0, 300, 0, 270)
-
             main.Position = UDim2.new(0.5, -150, 0.5, -135)
-
             main.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
-
             main.BorderSizePixel = 0
-
-
-
             Instance.new("UICorner", main).CornerRadius = UDim.new(0, 8)
-
-            local mainStroke = Instance.new("UIStroke", main)
-
-            mainStroke.Color = Color3.fromRGB(60, 60, 70)
-
-            mainStroke.Thickness = 1.5
-
-
+            
+            local mStroke = Instance.new("UIStroke", main)
+            mStroke.Color = Color3.fromRGB(60, 60, 70)
 
             local title = Instance.new("TextLabel", main)
-
             title.Size = UDim2.new(1, -40, 0, 40)
-
             title.Position = UDim2.new(0, 15, 0, 0)
-
             title.BackgroundTransparency = 1
-
             title.Font = Enum.Font.GothamBold
-
-            title.Text = "⚔️ KILL AURA v2"
-
+            title.Text = "⚔️ KILL AURA SECURE"
             title.TextColor3 = Color3.fromRGB(240, 240, 245)
-
             title.TextSize = 13
 
-            title.TextXAlignment = Enum.TextXAlignment.Left
-
-
-
             local closeBtn = Instance.new("TextButton", main)
-
             closeBtn.Size = UDim2.new(0, 30, 0, 30)
-
             closeBtn.Position = UDim2.new(1, -35, 0, 5)
-
             closeBtn.BackgroundTransparency = 1
-
-            closeBtn.Font = Enum.Font.Gotham
-
             closeBtn.Text = "❌"
+            closeBtn.MouseButton1Click:Connect(function() _0xLocalG.attackPlayer = false sGui:Destroy() end)
 
-            closeBtn.TextColor3 = Color3.fromRGB(140, 140, 150)
-
-            closeBtn.TextSize = 14
-
-
-
-            closeBtn.MouseButton1Click:Connect(function()
-
-                getgenv().attackPlayer = false
-
-                screenGui:Destroy()
-
-            end)
-
-
-
-            local function createInput(placeholder, text, posY)
-
+            local function cInput(ph, txt, posY)
                 local box = Instance.new("TextBox", main)
-
                 box.Size = UDim2.new(1, -30, 0, 36)
-
                 box.Position = UDim2.new(0, 15, 0, posY)
-
                 box.BackgroundColor3 = Color3.fromRGB(28, 28, 35)
-
-                box.Font = Enum.Font.Gotham
-
-                box.Text = text
-
-                box.PlaceholderText = placeholder
-
+                box.Text = txt
+                box.PlaceholderText = ph
                 box.TextColor3 = Color3.fromRGB(220, 220, 230)
-
-                box.TextSize = 12
-
                 box.ClearTextOnFocus = false
-
                 Instance.new("UICorner", box).CornerRadius = UDim.new(0, 6)
-
                 return box
-
             end
 
+            local hBox = cInput("Golpes (Ej: 5)", "Golpes: " .. (_0xLocalG.hits or 1), 45)
+            local cdBox = cInput("Cooldown (Ej: 0.1)", "Cooldown: " .. (_0xLocalG.cooldown or 1), 90)
 
-
-            local hitsBox = createInput("Cantidad de golpes (Ej: 5)", "Golpes: " .. (getgenv().hits or 1), 45)
-
-            local cooldownBox = createInput("Cooldown en segundos (Ej: 0.1)", "Cooldown: " .. (getgenv().cooldown or 1), 90)
-
-
-
-            hitsBox.FocusLost:Connect(function()
-
-                local val = tonumber(hitsBox.Text:match("%d+")) or getgenv().hits or 1
-
-                getgenv().hits = val
-
-                hitsBox.Text = "Golpes: " .. val
-
+            hBox.FocusLost:Connect(function()
+                local val = tonumber(hBox.Text:match("%d+")) or _0xLocalG.hits or 1
+                _0xLocalG.hits = val hBox.Text = "Golpes: " .. val
             end)
 
-
-
-            cooldownBox.FocusLost:Connect(function()
-
-                local val = tonumber(cooldownBox.Text:match("[%d%.]+")) or getgenv().cooldown or 1
-
+            cdBox.FocusLost:Connect(function()
+                local val = tonumber(cdBox.Text:match("[%d%.]+")) or _0xLocalG.cooldown or 1
                 if val < 0.01 then val = 0.01 end
-
-                getgenv().cooldown = val
-
-                cooldownBox.Text = string.format("Cooldown: %.2fs", val)
-
+                _0xLocalG.cooldown = val cdBox.Text = string.format("Cooldown: %.2fs", val)
             end)
 
+            local sLabel = Instance.new("TextLabel", main)
+            sLabel.Size = UDim2.new(1, -30, 0, 30)
+            sLabel.Position = UDim2.new(0, 15, 0, 140)
+            sLabel.BackgroundTransparency = 1
+            sLabel.Text = "● ESTADO: INACTIVO"
+            sLabel.TextColor3 = Color3.fromRGB(220, 80, 80)
 
+            local tBtn = Instance.new("TextButton", main)
+            tBtn.Size = UDim2.new(1, -30, 0, 45)
+            tBtn.Position = UDim2.new(0, 15, 0, 185)
+            tBtn.BackgroundColor3 = Color3.fromRGB(180, 50, 65)
+            tBtn.Text = "ACTIVAR"
+            Instance.new("UICorner", tBtn).CornerRadius = UDim.new(0, 6)
 
-            local statusLabel = Instance.new("TextLabel", main)
-
-            statusLabel.Size = UDim2.new(1, -30, 0, 30)
-
-            statusLabel.Position = UDim2.new(0, 15, 0, 140)
-
-            statusLabel.BackgroundTransparency = 1
-
-            statusLabel.Font = Enum.Font.Code
-
-            statusLabel.Text = "● ESTADO: INACTIVO"
-
-            statusLabel.TextColor3 = Color3.fromRGB(220, 80, 80)
-
-            statusLabel.TextSize = 11
-
-            statusLabel.TextXAlignment = Enum.TextXAlignment.Left
-
-
-
-            local toggleBtn = Instance.new("TextButton", main)
-
-            toggleBtn.Size = UDim2.new(1, -30, 0, 45)
-
-            toggleBtn.Position = UDim2.new(0, 15, 0, 185)
-
-            toggleBtn.BackgroundColor3 = Color3.fromRGB(180, 50, 65)
-
-            toggleBtn.Font = Enum.Font.GothamBold
-
-            toggleBtn.Text = "ACTIVAR"
-
-            toggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-
-            toggleBtn.TextSize = 13
-
-            toggleBtn.AutoButtonColor = true
-
-            Instance.new("UICorner", toggleBtn).CornerRadius = UDim.new(0, 6)
-
-
-
-            toggleBtn.MouseButton1Click:Connect(function()
-
-                getgenv().attackPlayer = not getgenv().attackPlayer
-
-                
-
-                getgenv().hits = tonumber(hitsBox.Text:match("%d+")) or getgenv().hits or 1
-
-                local cd = tonumber(cooldownBox.Text:match("[%d%.]+")) or getgenv().cooldown or 1
-
-                getgenv().cooldown = cd < 0.01 and 0.01 or cd
-
-
-
-                if getgenv().attackPlayer then
-
-                    toggleBtn.Text = "DESACTIVAR"
-
-                    toggleBtn.BackgroundColor3 = Color3.fromRGB(40, 140, 80)
-
-                    mainStroke.Color = Color3.fromRGB(40, 140, 80)
-
-                    statusLabel.Text = string.format("● ACTIVO | HITS: %d | CD: %.2fs", getgenv().hits, getgenv().cooldown)
-
-                    statusLabel.TextColor3 = Color3.fromRGB(100, 220, 140)
-
-
+            tBtn.MouseButton1Click:Connect(function()
+                _0xLocalG.attackPlayer = not _0xLocalG.attackPlayer
+                if _0xLocalG.attackPlayer then
+                    tBtn.Text = "DESACTIVAR"
+                    tBtn.BackgroundColor3 = Color3.fromRGB(40, 140, 80)
+                    sLabel.Text = "● ACTIVO"
+                    sLabel.TextColor3 = Color3.fromRGB(100, 220, 140)
 
                     task.spawn(function()
-
-                        local punchEvent = ReplicatedStorage:WaitForChild("Events"):WaitForChild("Punch")
-
-                        while getgenv().attackPlayer do
-
-                            local char = Players.LocalPlayer.Character
-
-                            if char and char:FindFirstChild("Humanoid") and char.Humanoid.Health > 0 then
-
-                                for i = 1, getgenv().hits do
-
-                                    if not getgenv().attackPlayer then break end
-
-                                    punchEvent:FireServer(0.4, 0.1, 1)
-
+                        -- Llamada protegida por cadena hexadecimal a la carpeta de eventos
+                        local pEvent = _0xRS:WaitForChild(_0xBaseUrls.Punch):WaitForChild("Punch")
+                        while _0xLocalG.attackPlayer do
+                            local c = _0xP.LocalPlayer.Character
+                            if c and c:FindFirstChild("Humanoid") and c.Humanoid.Health > 0 then
+                                for i = 1, (_0xLocalG.hits or 1) do
+                                    if not _0xLocalG.attackPlayer then break end
+                                    pEvent:FireServer(0.4, 0.1, 1)
                                 end
-
                             end
-
-                            task.wait(getgenv().cooldown)
-
+                            task.wait(_0xLocalG.cooldown or 1)
                         end
-
                     end)
-
                 else
-
-                    toggleBtn.Text = "ACTIVAR"
-
-                    toggleBtn.BackgroundColor3 = Color3.fromRGB(180, 50, 65)
-
-                    mainStroke.Color = Color3.fromRGB(60, 60, 70)
-
-                    statusLabel.Text = "● ESTADO: INACTIVO"
-
-                    statusLabel.TextColor3 = Color3.fromRGB(220, 80, 80)
-
+                    tBtn.Text = "ACTIVAR"
+                    tBtn.BackgroundColor3 = Color3.fromRGB(180, 50, 65)
+                    sLabel.Text = "● ESTADO: INACTIVO"
+                    sLabel.TextColor3 = Color3.fromRGB(220, 80, 80)
                 end
-
             end)
-
-
-
-            local dragging, dragInput, dragStart, startPos
-
-            main.InputBegan:Connect(function(input)
-
-                if input.UserInputType == Enum.UserInputType.MouseButton1 then
-
-                    dragging = true dragStart = input.Position startPos = main.Position
-
-                    input.Changed:Connect(function() if input.UserInputState == Enum.UserInputState.End then dragging = false end end)
-
-                end
-
-            end)
-
-            main.InputChanged:Connect(function(input) if input.UserInputType == Enum.UserInputType.MouseMovement then dragInput = input end end)
-
-            UIS.InputChanged:Connect(function(input)
-
-                if input == dragInput and dragging then
-
-                    local delta = input.Position - dragStart
-
-                    main.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-
-                end
-
-            end)
-
         end)
-
     end,
-
 })
 
-
-
--- SPAWN POINT UI
-
+-- ==========================================
+-- [PROTECTED] SPAWN POINT UI
+-- ==========================================
 MainTab:CreateButton({
-
     Name = "Spawn Point UI v2.1 lite",
-
     Callback = function()
-
-        local Players = game:GetService("Players")
-
-        local UIS = game:GetService("UserInputService")
-
-        
-
-        local player = Players.LocalPlayer
-
+        local _0xP = game:GetService("Players")
+        local _0xUIS = game:GetService("UserInputService")
+        local player = _0xP.LocalPlayer
         local spawnPosition = nil
-
         local isActive = false
-
         local interval = 1.00
 
+        local sGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+        sGui.Name = "QuantumSpawnUI"
+        sGui.ResetOnSpawn = false
 
-
-        local screenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
-
-        screenGui.Name = "QuantumSpawnUI"
-
-        screenGui.ResetOnSpawn = false
-
-
-
-        local main = Instance.new("Frame", screenGui)
-
+        local main = Instance.new("Frame", sGui)
         main.Size = UDim2.new(0, 300, 0, 240)
-
         main.Position = UDim2.new(0.5, -150, 0.5, -120)
-
         main.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
-
-        main.BorderSizePixel = 0
-
-
-
         Instance.new("UICorner", main).CornerRadius = UDim.new(0, 8)
 
-        local mainStroke = Instance.new("UIStroke", main)
-
-        mainStroke.Color = Color3.fromRGB(50, 50, 60)
-
-
-
-        local title = Instance.new("TextLabel", main)
-
-        title.Size = UDim2.new(1, -40, 0, 40)
-
-        title.Position = UDim2.new(0, 15, 0, 0)
-
-        title.BackgroundTransparency = 1
-
-        title.Font = Enum.Font.GothamBold
-
-        title.Text = "GRAVEDAD=AZUL v2"
-
-        title.TextColor3 = Color3.fromRGB(235, 235, 240)
-
-        title.TextSize = 14
-
-        title.TextXAlignment = Enum.TextXAlignment.Left
-
-
-
-        local closeBtn = Instance.new("TextButton", main)
-
-        closeBtn.Size = UDim2.new(0, 30, 0, 30)
-
-        closeBtn.Position = UDim2.new(1, -35, 0, 5)
-
-        closeBtn.BackgroundTransparency = 1
-
-        closeBtn.Font = Enum.Font.Gotham
-
-        closeBtn.Text = "❌"
-
-        closeBtn.TextColor3 = Color3.fromRGB(150, 150, 160)
-
-        closeBtn.TextSize = 14
-
-
-
         local coordText = Instance.new("TextLabel", main)
-
         coordText.Size = UDim2.new(1, -30, 0, 40)
-
         coordText.Position = UDim2.new(0, 15, 0, 45)
-
-        coordText.BackgroundColor3 = Color3.fromRGB(28, 28, 35)
-
-        coordText.Font = Enum.Font.Code
-
         coordText.Text = "POS: NOT SET"
 
-        coordText.TextColor3 = Color3.fromRGB(140, 140, 150)
-
-        coordText.TextSize = 12
-
-        Instance.new("UICorner", coordText).CornerRadius = UDim.new(0, 6)
-
-
-
         local intervalInput = Instance.new("TextBox", main)
-
         intervalInput.Size = UDim2.new(1, -30, 0, 35)
-
         intervalInput.Position = UDim2.new(0, 15, 0, 95)
-
-        intervalInput.BackgroundColor3 = Color3.fromRGB(28, 28, 35)
-
-        intervalInput.Font = Enum.Font.Gotham
-
         intervalInput.Text = "Intervalo: 1.00s"
 
-        intervalInput.TextColor3 = Color3.fromRGB(200, 200, 210)
+        local setBtn = Instance.new("TextButton", main)
+        setBtn.Size = UDim2.new(0.43, 0, 0, 40)
+        setBtn.Position = UDim2.new(0, 15, 0, 145)
+        setBtn.Text = "SET POS"
 
-        intervalInput.TextSize = 12
-
-        Instance.new("UICorner", intervalInput).CornerRadius = UDim.new(0, 6)
-
-
-
-        local function createBtn(text, pos, bg)
-
-            local btn = Instance.new("TextButton", main)
-
-            btn.Size = UDim2.new(0.43, 0, 0, 40)
-
-            btn.Position = pos
-
-            btn.BackgroundColor3 = bg
-
-            btn.Font = Enum.Font.GothamBold
-
-            btn.Text = text
-
-            btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-
-            btn.TextSize = 12
-
-            btn.AutoButtonColor = true
-
-            Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
-
-            return btn
-
-        end
-
-
-
-        local setBtn = createBtn("SET POS", UDim2.new(0, 15, 0, 145), Color3.fromRGB(45, 75, 180))
-
-        local activateBtn = createBtn("ACTIVATE", UDim2.new(0.57, -15, 0, 145), Color3.fromRGB(35, 140, 85))
-
-
+        local activateBtn = Instance.new("TextButton", main)
+        activateBtn.Size = UDim2.new(0.43, 0, 0, 40)
+        activateBtn.Position = UDim2.new(0.57, -15, 0, 145)
+        activateBtn.Text = "ACTIVATE"
 
         intervalInput.FocusLost:Connect(function()
-
             local value = tonumber(intervalInput.Text:match("[%d%.]+"))
-
-            if value and value >= 0.01 and value <= 5.0 then 
-
-                interval = value 
-
-            end
-
+            if value and value >= 0.01 and value <= 5.0 then interval = value end
             intervalInput.Text = string.format("Intervalo: %.2fs", interval)
-
         end)
-
-
 
         setBtn.MouseButton1Click:Connect(function()
-
             local hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-
             if hrp then
-
                 spawnPosition = hrp.CFrame
-
                 coordText.Text = string.format("X: %.1f | Y: %.1f | Z: %.1f", hrp.Position.X, hrp.Position.Y, hrp.Position.Z)
-
-                coordText.TextColor3 = Color3.fromRGB(100, 220, 140)
-
             end
-
         end)
-
-
 
         activateBtn.MouseButton1Click:Connect(function()
-
             if not spawnPosition then return end
-
             isActive = not isActive
-
-            
-
             if isActive then
-
                 activateBtn.Text = "DEACTIVATE"
-
-                activateBtn.BackgroundColor3 = Color3.fromRGB(170, 45, 45)
-
-                mainStroke.Color = Color3.fromRGB(170, 45, 45)
-
-                
-
                 task.spawn(function()
-
                     while isActive do
-
                         task.wait(interval)
-
                         local hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-
-                        if isActive and spawnPosition and hrp then
-
-                            hrp.CFrame = spawnPosition
-
-                        end
-
+                        if isActive and spawnPosition and hrp then hrp.CFrame = spawnPosition end
                     end
-
                 end)
-
             else
-
                 activateBtn.Text = "ACTIVATE"
-
-                activateBtn.BackgroundColor3 = Color3.fromRGB(35, 140, 85)
-
-                mainStroke.Color = Color3.fromRGB(50, 50, 60)
-
             end
-
         end)
-
-
-
-        closeBtn.MouseButton1Click:Connect(function()
-
-            isActive = false
-
-            screenGui:Destroy()
-
-        end)
-
-
-
-        local dragging, dragInput, dragStart, startPos
-
-        main.InputBegan:Connect(function(input)
-
-            if input.UserInputType == Enum.UserInputType.MouseButton1 then
-
-                dragging = true dragStart = input.Position startPos = main.Position
-
-                input.Changed:Connect(function() if input.UserInputState == Enum.UserInputState.End then dragging = false end end)
-
-            end
-
-        end)
-
-        main.InputChanged:Connect(function(input) if input.UserInputType == Enum.UserInputType.MouseMovement then dragInput = input end end)
-
-        UIS.InputChanged:Connect(function(input)
-
-            if input == dragInput and dragging then
-
-                local delta = input.Position - dragStart
-
-                main.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-
-            end
-
-        end)
-
     end,
-
 })
 
-
-
--- ANTI-AFK BUTTON
-
+-- ==========================================
+-- [PROTECTED] ANTI-AFK ENGINE
+-- ==========================================
 local AntiAFK_Enabled = false
-
 MainTab:CreateButton({
-
     Name = "Anti-AFK",
-
     Callback = function()
-
         AntiAFK_Enabled = not AntiAFK_Enabled
-
-
-
         if AntiAFK_Enabled then
-
-            local player = game:GetService("Players").LocalPlayer
-
-
-
+            local p = game:GetService("Players").LocalPlayer
             local function enableAntiAFK()
-
-                player.Idled:Connect(function()
-
+                p.Idled:Connect(function()
                     game:GetService("VirtualUser"):Button2Down(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
-
                     task.wait(1)
-
                     game:GetService("VirtualUser"):Button2Up(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
-
                 end)
-
             end
-
-
-
             enableAntiAFK()
-
-            player.CharacterAdded:Connect(enableAntiAFK)
-
-
-
-            Rayfield:Notify({
-
-                Title = "Anti-AFK",
-
-                Content = "Activado correctamente.",
-
-                Duration = 99999999999999999999999999999999
-
-            })
-
-        else
-
-            Rayfield:Notify({
-
-                Title = "Anti-AFK",
-
-                Content = "Desactivado.",
-
-                Duration = 2000
-
-            })
-
+            p.CharacterAdded:Connect(enableAntiAFK)
+            Rayfield:Notify({ Title = "Anti-AFK", Content = "Activado.", Duration = 4 })
         end
-
     end,
-
 })
 
-
-
--- SECCIÓN PLAYER TELEPORT
-
+-- ==========================================
+-- TELEPORT SYSTEM
+-- ==========================================
 local PlayersSection = MainTab:CreateSection("PLAYER TELEPORT")
+local PlayersService = game:GetService("Players")
+local lpClient = PlayersService.LocalPlayer
+local pList = {}
+local targetPlayer = nil
 
-
-
-local Players = game:GetService("Players")
-
-local lp = Players.LocalPlayer
-
-
-
-local playerList = {}
-
-local selectedPlayer = nil
-
-
-
-local function updatePlayerList()
-
-    table.clear(playerList)
-
-    for _, p in ipairs(Players:GetPlayers()) do
-
-        if p ~= lp and p.Name then
-
-            table.insert(playerList, p.Name)
-
-        end
-
+local function refreshPList()
+    table.clear(pList)
+    for _, p in ipairs(PlayersService:GetPlayers()) do
+        if p ~= lpClient and p.Name then table.insert(pList, p.Name) end
     end
-
 end
-
-
-
-updatePlayerList()
-
-
+refreshPList()
 
 local PlayerDropdown = MainTab:CreateDropdown({
-
     Name = "Seleccionar Jugador",
-
-    Options = playerList,
-
+    Options = pList,
     CurrentOption = "",
-
     MultipleOptions = false,
-
     Flag = "PlayerTPDropdown",
-
-    Callback = function(selected)
-
-        if type(selected) == "table" then
-
-            selectedPlayer = selected[1]
-
-        else
-
-            selectedPlayer = selected
-
-        end
-
+    Callback = function(sel)
+        if type(sel) == "table" then targetPlayer = sel[1] else targetPlayer = sel end
     end,
-
 })
 
-
-
 MainTab:CreateButton({
-
     Name = "Teletransportarse",
-
     Callback = function()
-
-        if not selectedPlayer then
-
-            Rayfield:Notify({Title = "Error", Content = "Selecciona un jugador primero", Duration = 3})
-
-            return
-
-        end
-
-        
-
-        local target = Players:FindFirstChild(selectedPlayer)
-
-        local targetHrp = target and target.Character and target.Character:FindFirstChild("HumanoidRootPart")
-
-        local myHrp = lp.Character and lp.Character:FindFirstChild("HumanoidRootPart")
-
-        
-
-        if myHrp and targetHrp then
-
-            myHrp.CFrame = targetHrp.CFrame * CFrame.new(0, 3, 0)
-
-            Rayfield:Notify({Title = "Teleport", Content = "Te has tpeado con éxito a " .. selectedPlayer, Duration = 2})
-
-        else
-
-            Rayfield:Notify({Title = "Error", Content = "El jugador no tiene Character o está muerto", Duration = 3})
-
-        end
-
+        if not targetPlayer then return end
+        local t = PlayersService:FindFirstChild(targetPlayer)
+        local tHrp = t and t.Character and t.Character:FindFirstChild("HumanoidRootPart")
+        local myHrp = lpClient.Character and lpClient.Character:FindFirstChild("HumanoidRootPart")
+        if myHrp and tHrp then myHrp.CFrame = tHrp.CFrame * CFrame.new(0, 3, 0) end
     end,
-
 })
 
-
-
-MainTab:CreateButton({
-
-    Name = "Actualizar Lista Manual",
-
-    Callback = function()
-
-        updatePlayerList()
-
-        PlayerDropdown:Refresh(playerList, true)
-
-        Rayfield:Notify({Title = "Lista Actualizada", Content = "Se escanearon los jugadores del servidor", Duration = 2})
-
-    end,
-
-})
-
-
-
-local function autoRefresh()
-
-    updatePlayerList()
-
-    PlayerDropdown:Refresh(playerList, false)
-
-end
-
-
-
-Players.PlayerAdded:Connect(autoRefresh)
-
-Players.PlayerRemoving:Connect(autoRefresh)
-
-
-
--- ====================================================================
-
--- PESTAÑA AUTO STATS
-
--- ====================================================================
-
+-- ==========================================
+-- [PROTECTED] AUTO STATS ENGINE
+-- ==========================================
 local StatsTab = Window:CreateTab("Auto Stats", 6031075938)
+StatsTab:CreateSection("Upgrade Settings")
 
-local StatSection = StatsTab:CreateSection("Upgrade Settings")
+_0xLocalG.selectedstat = "vitality" 
 
-
-
-local function GetAutoStatsList()
-
-    return {
-
-        "vitality", "healing", "strength", "energy", "flight", "speed",
-
-        "climbing", "swinging", "fireball", "frost", "lightning", "power",
-
-        "telekinesis", "shield", "laserVision", "metalSkin"
-
-    }
-
-end
-
-
-
-getgenv().selectedstat = "vitality" 
-
-
-
-local StatDropdown = StatsTab:CreateDropdown({
-
+StatsTab:CreateDropdown({
     Name = "Select Stat",
-
-    Options = GetAutoStatsList(),
-
+    Options = {"vitality", "healing", "strength", "energy", "flight", "speed", "climbing", "swinging", "fireball", "frost", "lightning", "power", "telekinesis", "shield", "laserVision", "metalSkin"},
     CurrentOption = {"vitality"},
-
     MultipleOptions = false,
-
-    Flag = "SelectedStatFlag",
-
-    Callback = function(Option)
-
-        if type(Option) == "table" then
-
-            getgenv().selectedstat = Option[1]
-
-        else
-
-            getgenv().selectedstat = Option
-
-        end
-
-        
-
-        Rayfield:Notify({
-
-            Title = "Stat seleccionada",
-
-            Content = "Has elegido: " .. tostring(getgenv().selectedstat),
-
-            Duration = 3.5
-
-        })
-
+    Callback = function(opt)
+        if type(opt) == "table" then _0xLocalG.selectedstat = opt[1] else _0xLocalG.selectedstat = opt end
     end,
-
 })
 
-
-
-local upgradeAmounts = {10, 20, 30, 40, 50, 100, 150, 300, 450, 600, 800, 1000, 1500, 2000, 3000, 6000, 8000, 10000, 15000, 20000, 30000, 40000, 100000}
-
-
-
-for _, amount in ipairs(upgradeAmounts) do
-
+local amounts = {10, 50, 100, 500, 1000, 5000, 10000, 40000, 100000}
+for _, amt in ipairs(amounts) do
     StatsTab:CreateButton({
-
-        Name = "Upgrade " .. amount .. "x",
-
+        Name = "Upgrade " .. amt .. "x",
         Callback = function()
-
-            if getgenv().selectedstat then
-
-                for i = 1, amount do
-
+            if _0xLocalG.selectedstat then
+                for i = 1, amt do
                     task.spawn(function()
-
-                        game:GetService("ReplicatedStorage").Events.UpgradeAbility:InvokeServer(getgenv().selectedstat)
-
+                        -- Invocación codificada
+                        game:GetService("ReplicatedStorage")[_0xBaseUrls.Punch][_0xBaseUrls.Upgrade]:InvokeServer(_0xLocalG.selectedstat)
                     end)
-
                 end
-
-                Rayfield:Notify({
-
-                    Title = "Puntos completados",
-
-                    Content = "Se mejoró '" .. getgenv().selectedstat .. "' " .. amount .. " veces.",
-
-                    Duration = 2
-
-                })
-
-            else
-
-                Rayfield:Notify({
-
-                    Title = "No seleccionaste nada",
-
-                    Content = "Selecciona una antes de mejorar.",
-
-                    Duration = 2
-
-                })
-
             end
-
         end,
-
     })
-
 end
