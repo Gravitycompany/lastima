@@ -121,65 +121,64 @@ MainTab:CreateToggle({
     end
 })
 
--- FARM24 / EXTRA FPS BOOSTER TERMINAL (MÉTODO ULTRA RENDIMIENTO)
 MainTab:CreateButton({
-    Name = "farm24 (Modo Dios FPS)",
+    Name = " Dispara tus FPS v1",
     Callback = function()
-        -- 1. APAGAR PROCESAMIENTO GRÁFICO 3D (Máximo ahorro de recursos del procesador/GPU)
-        pcall(function()
-            game:GetService("RunService"):Set3DRenderingEnabled(false)
-        end)
+        local g = game
+        local w = g.Workspace
+        local l = g.Lighting
+        local t = w:FindFirstChildOfClass("Terrain")
 
-        -- 2. LIMPIEZA DE BASURA EN MEMORIA RAM
-        setfpscap(30) -- Limita a 30 FPS internos para que tu PC no trabaje de más en segundo plano
-        gcinfo() -- Recolector de basura nativo
-
-        -- 3. ELIMINACIÓN RADICAL DE ELEMENTOS VISUALES ORIGINALES
-        local w = workspace
-        local l = game:GetService("Lighting")
-
-        w.LevelOfDetail = Enum.LevelOfDetail.Low
-        if w:FindFirstChildOfClass("Terrain") then
-            local t = w:FindFirstChildOfClass("Terrain")
+        if t then
             t.WaterWaveSize = 0
             t.WaterWaveSpeed = 0
             t.WaterReflectance = 0
             t.WaterTransparency = 0
-            t.Decoration = false
+            t:Clear() -- elimina terreno = m ximo aumento de fps
         end
 
         l.GlobalShadows = false
         l.FogEnd = 9e9
         l.Brightness = 0
-        
-        for _, effect in ipairs(l:GetChildren()) do
-            if effect:IsA("PostEffect") or effect:IsA("BlurEffect") or effect:IsA("SunRaysEffect") or effect:IsA("BloomEffect") or effect:IsA("ColorCorrectionEffect") or effect:IsA("DepthOfFieldEffect") then
-                effect:Destroy()
+
+        settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
+
+        -- Optimiza todas las partes
+        for _, v in pairs(w:GetDescendants()) do
+            if v:IsA("BasePart") then
+                v.Material = Enum.Material.Plastic
+                v.Reflectance = 0
+            elseif v:IsA("Decal") or v:IsA("Texture") then
+                v.Transparency = 1
+            elseif v:IsA("ParticleEmitter") or v:IsA("Trail") then
+                v.Lifetime = NumberRange.new(0)
+            elseif v:IsA("Fire") or v:IsA("Smoke") or v:IsA("Sparkles") then
+                v.Enabled = false
             end
         end
 
-        task.spawn(function()
-            local descendants = w:GetDescendants()
-            for i = 1, #descendants do
-                local v = descendants[i]
-                if v:IsA("BasePart") then
-                    v.Material = Enum.Material.SmoothPlastic
-                    v.Reflectance = 0
-                    v.CastShadow = false
-                elseif v:IsA("Decal") or v:IsA("Texture") or v:IsA("Beam") or v:IsA("ParticleEmitter") or v:IsA("Trail") then
-                    v:Destroy()
-                end
-                if i % 1000 == 0 then task.wait() end
+        -- Apaga efectos
+        for _, e in pairs(l:GetChildren()) do
+            if e:IsA("BlurEffect") or e:IsA("SunRaysEffect") or e:IsA("BloomEffect")
+            or e:IsA("ColorCorrectionEffect") or e:IsA("DepthOfFieldEffect") then
+                e.Enabled = false
+            end
+        end
+
+        workspace.DescendantAdded:Connect(function(v)
+            if v:IsA("Smoke") or v:IsA("Fire") or v:IsA("Sparkles") or v:IsA("ForceField") then
+                v:Destroy()
             end
         end)
 
         Rayfield:Notify({
-            Title = "Modo Tostadora Supremo",
-            Content = "Renderizado 3D desactivado. Tu juego ahora consume el mínimo posible.",
-            Duration = 10
+            Title = " FPS Boost",
+            Content = " Ultra Optimizaci n aplicada",
+            Duration = 6
         })
     end,
 })
+
 
 -- KILL AURA UI MENU LITE
 MainTab:CreateButton({
@@ -510,7 +509,7 @@ MainTab:CreateButton({
             Rayfield:Notify({
                 Title = "Anti-AFK",
                 Content = "Activado correctamente.",
-                Duration = 5
+                Duration = 99999999999999999999999999999999999999999999999999
             })
         else
             Rayfield:Notify({
