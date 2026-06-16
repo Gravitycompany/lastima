@@ -1,23 +1,14 @@
 --[[
-    🔒 ANTI-REVERSE ENGINEERING SYSTEM ACTIVE (v5.0)
-    [COMPATIBILITY]: SOLARA / WAVE / INFERNUS / ELECTRON
+    📜 SCRIPT ORIGINAL - GRAVEDAD LITE
+    [ESTADO]: Desofuscado / Código Limpio
 --]]
 
-local _0xEnv = getgenv()
-_0xEnv._0xSystemActive = true
+-- Cargar la librería de interfaz Rayfield
+local Rayfield = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
 
--- Tabla interna de métodos ocultos para despistar escáneres
-local _0xLib = {
-    ["\103\97\109\101"] = game,
-    ["\103\101\116\83\101\114\118\105\99\101"] = "GetService",
-    ["\112\99\97\108\108"] = pcall
-}
-
--- Carga de la interfaz de forma críptica
-local _0xL = loadstring(_0xLib["\103\97\109\101"]:HttpGet("https://sirius.menu/rawfield"))()
-
-local _0xW = _0xL:CreateWindow({
-    Name = "GRAVEDAD x1.1 [SECURE]",
+-- Crear la ventana principal
+local Window = Rayfield:CreateWindow({
+    Name = "GRAVEDAD x1.1",
     Icon = 11735801220,
     LoadingTitle = "GRAVEDAD-Lite",
     LoadingSubtitle = "by Papita",
@@ -26,35 +17,43 @@ local _0xW = _0xL:CreateWindow({
     KeySystem = false
 })
 
-_0xL:Notify({Title = "GRAVEDAD", Content = "Engine Protected v5 Loaded", Duration = 5})
+Rayfield:Notify({
+    Title = "GRAVEDAD",
+    Content = "Script cargado correctamente",
+    Duration = 5
+})
 
--- Pestañas principales con nombres alterados en memoria
-local _0xT1 = _0xW:CreateTab("MAIN FARM")
-local _0xS1 = _0xT1:CreateSection("FARM ZONE")
+-- Crear pestañas y secciones
+local MainTab = Window:CreateTab("MAIN FARM")
+local FarmSection = MainTab:CreateSection("FARM ZONE")
 
--- LOGICA DEL AUTO-FARM (Totalmente ilegible)
-_0xS1:CreateToggle({
+-- Lógica del Auto-Farm de Orbes
+_G.OrbFarm = false
+FarmSection:CreateToggle({
     Name = "Orb Farm (Tween)",
     CurrentValue = false,
-    Callback = function(_0xState)
-        _0xEnv._0xLoop = _0xState
-        if _0xState then
+    Callback = function(Value)
+        _G.OrbFarm = Value
+        if Value then
             task.spawn(function()
-                while _0xEnv._0xLoop do
+                while _G.OrbFarm do
                     task.wait(0.1)
-                    _0xLib["\112\99\97\108\108"](function()
-                        local _0xWsp = _0xLib["\103\97\109\101"].Workspace
-                        local _0xTargetFolder = _0xWsp:FindFirstChild("ExperienceOrbs") or _0xWsp:FindFirstChild("Orbs")
-                        if _0xTargetFolder then
-                            local _0xChildren = _0xTargetFolder:GetChildren()
-                            for _0xIdx = 1, #_0xChildren do
-                                local _0xOrb = _0xChildren[_0xIdx]
-                                if _0xOrb:IsA("BasePart") then
-                                    local _0xRoot = _0xLib["\103\97\109\101"].Players.LocalPlayer.Character.HumanoidRootPart
-                                    _0xRoot.CFrame = _0xOrb.CFrame
-                                    firetouchinterest(_0xRoot, _0xOrb, 0)
+                    pcall(function()
+                        local Workspace = game.Workspace
+                        -- Buscar la carpeta contenedora de orbes (ajusta el nombre si el juego cambia)
+                        local OrbsFolder = Workspace:FindFirstChild("ExperienceOrbs") or Workspace:FindFirstChild("Orbs")
+                        
+                        if OrbsFolder then
+                            local Children = OrbsFolder:GetChildren()
+                            for i = 1, #Children do
+                                local Orb = Children[i]
+                                if Orb:IsA("BasePart") then
+                                    local RootPart = game.Players.LocalPlayer.Character.HumanoidRootPart
+                                    -- Teletransportar e interactuar con el objeto
+                                    RootPart.CFrame = Orb.CFrame
+                                    firetouchinterest(RootPart, Orb, 0)
                                     task.wait(0.01)
-                                    firetouchinterest(_0xRoot, _0xOrb, 1)
+                                    firetouchinterest(RootPart, Orb, 1)
                                     break
                                 end
                             end
@@ -66,80 +65,90 @@ _0xS1:CreateToggle({
     end
 })
 
--- El Optimizador FPS oculto
-local _0xOptimize = function()
-    _0xLib["\112\99\97\108\108"](function()
-        _0xLib["\103\97\109\101"]:GetService("RunService"):Set3dRenderingEnabled(false)
-    end)
-    setfpscap(30)
-    for _, _0xObj in ipairs(_0xLib["\103\97\109\101"].Workspace:GetDescendants()) do
-        if string.match(_0xObj.ClassName, "Part") then
-            _0xObj.Material = "Plastic"
-            _0xObj.CastShadow = false
-        elseif _0xObj:IsA("Decal") then
-            _0xObj.Transparency = 1
-        end
-    end
-end
-
--- El Kill Aura UI oculto
-local _0xKillAura = function()
-    local _0xGui = _0xLib["\103\97\109\101"]:GetService("CoreGui")
-    if _0xGui:FindFirstChild("KAG") then _0xGui.KAG:Destroy() end
-    local _0xSGui = Instance.new("ScreenGui", _0xGui)
-    _0xSGui.Name = "KAG"
-    local _0xFrame = Instance.new("Frame", _0xSGui)
-    _0xFrame.Size = UDim2.new(0, 300, 0, 270)
-    _0xFrame.Position = UDim2.new(0.5, -150, 0.5, -135)
-    _0xFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
-    local _0xBtn = Instance.new("TextButton", _0xFrame)
-    _0xBtn.Size = UDim2.new(1, -30, 0, 45)
-    _0xBtn.Position = UDim2.new(0, 15, 0, 185)
-    _0xBtn.Text = "ACTIVAR"
-    _0xBtn.MouseButton1Click:Connect(function()
-        _0xEnv._0xKActive = not _0xEnv._0xKActive
-        if _0xEnv._0xKActive then
-            _0xBtn.Text = "ON"
-            task.spawn(function()
-                while _0xEnv._0xKActive do
-                    task.wait(0.1)
-                    _0xLib["\112\99\97\108\108"](function()
-                        _0xLib["\103\97\109\101"]:GetService("ReplicatedStorage").Events.Punch:FireServer(0.4, 0.1, 1)
-                    end)
-                end
-            end)
-        else
-            _0xBtn.Text = "OFF"
-        end
-    end)
-end
-
--- 🔄 AQUÍ ESTÁ EL REFRESH / ACTUALIZADOR DE LISTA QUE QUERÍAS
-_0xS1:CreateButton({
+-- 🔄 Función de Actualización / Refresh de Lista
+FarmSection:CreateButton({
     Name = "🔄 Refresh Orb List",
     Callback = function()
-        local _0xWsp = _0xLib["\103\97\109\101"].Workspace
-        local _0xTargetFolder = _0xWsp:FindFirstChild("ExperienceOrbs") or _0xWsp:FindFirstChild("Orbs")
+        local Workspace = game.Workspace
+        local OrbsFolder = Workspace:FindFirstChild("ExperienceOrbs") or Workspace:FindFirstChild("Orbs")
         
-        if _0xTargetFolder then
-            local _0xCount = #_0xTargetFolder:GetChildren()
-            -- Forzamos al recolector de basura de Lua a limpiar instancias muertas de la memoria
+        if OrbsFolder then
+            -- Contar cuántos objetos activos existen en este momento
+            local TotalOrbs = #OrbsFolder:GetChildren()
+            
+            -- Limpieza de instancias huérfanas en la memoria de Lua
             collectgarbage("collect")
             
-            _0xL:Notify({
-                Title = "LIST UPDATED",
-                Content = "Se encontraron " .. tostring(_0xCount) .. " orbes activos en el mapa.",
+            Rayfield:Notify({
+                Title = "LISTA ACTUALIZADA",
+                Content = "Se encontraron " .. tostring(TotalOrbs) .. " orbes activos en el mapa.",
                 Duration = 3
             })
         else
-            _0xL:Notify({
+            Rayfield:Notify({
                 Title = "ERROR",
-                Content = "No se detectó la carpeta de Orbes en el Workspace.",
+                Content = "No se encontró la carpeta de Orbes en el Workspace.",
                 Duration = 3
             })
         end
     end
 })
 
-_0xS1:CreateButton({Name = "Disparar FPS", Callback = _0xOptimize})
-_0xS1:CreateButton({Name = "KillAura UI", Callback = _0xKillAura})
+-- Función para optimizar rendimiento (Bajar gráficos / Desactivar 3D)
+local function OptimizeFPS()
+    pcall(function()
+        game:GetService("RunService"):Set3dRenderingEnabled(false)
+    end)
+    setfpscap(30)
+    for _, obj in ipairs(game.Workspace:GetDescendants()) do
+        if obj:IsA("BasePart") then
+            obj.Material = Enum.Material.Plastic
+            obj.CastShadow = false
+        elseif obj:IsA("Decal") then
+            obj.Transparency = 1
+        end
+    end
+end
+
+-- Función para generar la interfaz alternativa de Kill Aura
+local function CreateKillAuraUI()
+    local CoreGui = game:GetService("CoreGui")
+    if CoreGui:FindFirstChild("KAG") then 
+        CoreGui.KAG:Destroy() 
+    end
+    
+    local ScreenGui = Instance.new("ScreenGui", CoreGui)
+    ScreenGui.Name = "KAG"
+    
+    local Frame = Instance.new("Frame", ScreenGui)
+    Frame.Size = UDim2.new(0, 300, 0, 270)
+    Frame.Position = UDim2.new(0.5, -150, 0.5, -135)
+    Frame.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+    
+    local Button = Instance.new("TextButton", Frame)
+    Button.Size = UDim2.new(1, -30, 0, 45)
+    Button.Position = UDim2.new(0, 15, 0, 185)
+    Button.Text = "ACTIVAR"
+    
+    _G.KillAuraActive = false
+    Button.MouseButton1Click:Connect(function()
+        _G.KillAuraActive = not _G.KillAuraActive
+        if _G.KillAuraActive then
+            Button.Text = "ON"
+            task.spawn(function()
+                while _G.KillAuraActive do
+                    task.wait(0.1)
+                    pcall(function()
+                        game:GetService("ReplicatedStorage").Events.Punch:FireServer(0.4, 0.1, 1)
+                    end)
+                end
+            end)
+        else
+            Button.Text = "OFF"
+        end
+    end)
+end
+
+-- Botones adicionales de utilidad
+FarmSection:CreateButton({Name = "Disparar FPS", Callback = OptimizeFPS})
+FarmSection:CreateButton({Name = "KillAura UI", Callback = CreateKillAuraUI})
