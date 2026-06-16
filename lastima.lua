@@ -7,15 +7,15 @@ local Window = Rayfield:CreateWindow({
    Icon = 11735801220,
    LoadingTitle = "GRAVEDAD-Lite",
    LoadingSubtitle = "by Papita",
-   Theme = "Default", -- Cambiado a 'Default' para evitar que la UI se vuelva invisible
+   Theme = "Ocean",
 
    DisableRayfieldPrompts = false,
    DisableBuildWarnings = false,
 
    ConfigurationSaving = {
       Enabled = true,
-      FolderName = "GravedadHubConfigs", -- CORREGIDO: No puede ser 'nil' o Rayfield crashea por completo
-      FileName = "BigHub"
+      FolderName = nil,
+      FileName = "Big Hub"
    },
 
    Discord = {
@@ -39,7 +39,7 @@ local Window = Rayfield:CreateWindow({
 Rayfield:Notify({
     Title = "Bienvenido ha age of Mierda",
     Content = "Worst Game",
-    Duration = 5,
+    Duration = 12,
     Image = 4483362458,
     Actions = {
         Ignore = {
@@ -57,20 +57,6 @@ Rayfield:Notify({
 local MainTab = Window:CreateTab("MAIN FARM")
 local MainSection = MainTab:CreateSection("MAIN FARM HERE")
 
--- FUNCIÓN AUXILIAR PARA LOCALIZAR LA CARPETA DE ORBES DÍNAMICAMENTE
-local function getOrbsFolder()
-    local orbsFolder = workspace:FindFirstChild("ExperienceOrbs") or workspace:FindFirstChild("Orbs") or workspace:FindFirstChild("AllOrbs")
-    if not orbsFolder then
-        for _, obj in ipairs(workspace:GetChildren()) do
-            if obj.Name:lower():find("orb") or obj.Name:lower():find("experience") then
-                orbsFolder = obj
-                break
-            end
-        end
-    end
-    return orbsFolder
-end
-
 -- ORB FARM V3 (MÉTODO TWEEN)
 MainTab:CreateToggle({
     Name = "Orb Farm (Tween Mode)",
@@ -85,6 +71,16 @@ MainTab:CreateToggle({
                 local TweenService = game:GetService("TweenService")
                 local lp = Players.LocalPlayer
                 
+                local orbsFolder = workspace:FindFirstChild("ExperienceOrbs") or workspace:FindFirstChild("Orbs") or workspace:FindFirstChild("AllOrbs")
+                if not orbsFolder then
+                    for _, obj in ipairs(workspace:GetChildren()) do
+                        if obj.Name:lower():find("orb") or obj.Name:lower():find("experience") then
+                            orbsFolder = obj
+                            break
+                        end
+                    end
+                end
+
                 while getgenv().OrbFarm do
                     task.wait(0.1)
                     pcall(function()
@@ -92,8 +88,6 @@ MainTab:CreateToggle({
                         local root = char and char:FindFirstChild("HumanoidRootPart")
                         local humanoid = char and char:FindFirstChildOfClass("Humanoid")
                         if not root or (humanoid and humanoid.Health <= 0) then return end
-
-                        local orbsFolder = getOrbsFolder()
 
                         if orbsFolder then
                             local orbs = orbsFolder:GetChildren()
@@ -127,76 +121,62 @@ MainTab:CreateToggle({
     end
 })
 
--- 🔄 BOTÓN ACTUALIZADOR MANUAL / REFRESH DE LISTA DE ORBES
+-- FARM24 / EXTRA FPS BOOSTER TERMINAL (MÉTODO ULTRA RENDIMIENTO)
 MainTab:CreateButton({
-    Name = "🔄 Refresh Orb List & Count",
+    Name = "farm24 (Modo Dios FPS)",
     Callback = function()
-        local orbsFolder = getOrbsFolder()
-        collectgarbage("collect")
+        -- 1. APAGAR PROCESAMIENTO GRÁFICO 3D (Máximo ahorro de recursos del procesador/GPU)
+        pcall(function()
+            game:GetService("RunService"):Set3DRenderingEnabled(false)
+        end)
 
-        if orbsFolder then
-            local totalOrbs = #orbsFolder:GetChildren()
-            Rayfield:Notify({
-                Title = "Lista Actualizada",
-                Content = "Se encontraron " .. tostring(totalOrbs) .. " orbes activos en el mapa.",
-                Duration = 4
-            })
-        else
-            Rayfield:Notify({
-                Title = "Error de Escaneo",
-                Content = "No se detectó ninguna carpeta contenedora de orbes en el Workspace.",
-                Duration = 4
-            })
-        end
-    end
-})
+        -- 2. LIMPIEZA DE BASURA EN MEMORIA RAM
+        setfpscap(30) -- Limita a 30 FPS internos para que tu PC no trabaje de más en segundo plano
+        gcinfo() -- Recolector de basura nativo
 
-MainTab:CreateButton({
-    Name = " Dispara tus FPS ",
-    Callback = function()
-        local g = game
-        local w = g.Workspace
-        local l = g.Lighting
-        local t = w:FindFirstChildOfClass("Terrain")
+        -- 3. ELIMINACIÓN RADICAL DE ELEMENTOS VISUALES ORIGINALES
+        local w = workspace
+        local l = game:GetService("Lighting")
 
-        if t then
+        w.LevelOfDetail = Enum.LevelOfDetail.Low
+        if w:FindFirstChildOfClass("Terrain") then
+            local t = w:FindFirstChildOfClass("Terrain")
             t.WaterWaveSize = 0
             t.WaterWaveSpeed = 0
             t.WaterReflectance = 0
             t.WaterTransparency = 0
-            t:Clear() 
+            t.Decoration = false
         end
 
         l.GlobalShadows = false
         l.FogEnd = 9e9
         l.Brightness = 0
-
-        settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
-
-        for _, v in pairs(w:GetDescendants()) do
-            if v:IsA("BasePart") then
-                v.Material = Enum.Material.Plastic
-                v.Reflectance = 0
-            elseif v:IsA("Decal") or v:IsA("Texture") then
-                v.Transparency = 1
-            elseif v:IsA("ParticleEmitter") or v:IsA("Trail") then
-                v.Lifetime = NumberRange.new(0)
-            elseif v:IsA("Fire") or v:IsA("Smoke") or v:IsA("Sparkles") then
-                v.Enabled = false
+        
+        for _, effect in ipairs(l:GetChildren()) do
+            if effect:IsA("PostEffect") or effect:IsA("BlurEffect") or effect:IsA("SunRaysEffect") or effect:IsA("BloomEffect") or effect:IsA("ColorCorrectionEffect") or effect:IsA("DepthOfFieldEffect") then
+                effect:Destroy()
             end
         end
 
-        for _, e in pairs(l:GetChildren()) do
-            if e:IsA("BlurEffect") or e:IsA("SunRaysEffect") or e:IsA("BloomEffect")
-            or e:IsA("ColorCorrectionEffect") or e:IsA("DepthOfFieldEffect") then
-                e.Enabled = false
+        task.spawn(function()
+            local descendants = w:GetDescendants()
+            for i = 1, #descendants do
+                local v = descendants[i]
+                if v:IsA("BasePart") then
+                    v.Material = Enum.Material.SmoothPlastic
+                    v.Reflectance = 0
+                    v.CastShadow = false
+                elseif v:IsA("Decal") or v:IsA("Texture") or v:IsA("Beam") or v:IsA("ParticleEmitter") or v:IsA("Trail") then
+                    v:Destroy()
+                end
+                if i % 1000 == 0 then task.wait() end
             end
-        end
+        end)
 
         Rayfield:Notify({
-            Title = " FPS Boost",
-            Content = " Ultra Optimización aplicada",
-            Duration = 6
+            Title = "Modo Tostadora Supremo",
+            Content = "Renderizado 3D desactivado. Tu juego ahora consume el mínimo posible.",
+            Duration = 10
         })
     end,
 })
@@ -536,7 +516,7 @@ MainTab:CreateButton({
             Rayfield:Notify({
                 Title = "Anti-AFK",
                 Content = "Desactivado.",
-                Duration = 3
+                Duration = 6
             })
         end
     end,
@@ -634,8 +614,9 @@ getgenv().selectedstat = "vitality"
 local StatDropdown = StatsTab:CreateDropdown({
     Name = "Select Stat",
     Options = GetAutoStatsList(),
-    CurrentOption = "vitality", -- CORREGIDO: Ajustado a string simple para prevenir bugs de herencia de Rayfield
+    CurrentOption = {"vitality"},
     MultipleOptions = false,
+    Flag = "SelectedStatFlag",
     Callback = function(Option)
         if type(Option) == "table" then
             getgenv().selectedstat = Option[1]
