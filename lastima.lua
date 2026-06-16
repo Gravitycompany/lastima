@@ -7,15 +7,15 @@ local Window = Rayfield:CreateWindow({
    Icon = 11735801220,
    LoadingTitle = "GRAVEDAD-Lite",
    LoadingSubtitle = "by Papita",
-   Theme = "Ocean",
+   Theme = "Default", -- Cambiado a 'Default' para evitar que la UI se vuelva invisible
 
    DisableRayfieldPrompts = false,
    DisableBuildWarnings = false,
 
    ConfigurationSaving = {
       Enabled = true,
-      FolderName = nil,
-      FileName = "Big Hub"
+      FolderName = "GravedadHubConfigs", -- CORREGIDO: No puede ser 'nil' o Rayfield crashea por completo
+      FileName = "BigHub"
    },
 
    Discord = {
@@ -39,7 +39,7 @@ local Window = Rayfield:CreateWindow({
 Rayfield:Notify({
     Title = "Bienvenido ha age of Mierda",
     Content = "Worst Game",
-    Duration = 12,
+    Duration = 5,
     Image = 4483362458,
     Actions = {
         Ignore = {
@@ -71,7 +71,7 @@ local function getOrbsFolder()
     return orbsFolder
 end
 
--- ORB FARM V3 (MÉTODO TWEEN) con Auto-Refresh integrado
+-- ORB FARM V3 (MÉTODO TWEEN)
 MainTab:CreateToggle({
     Name = "Orb Farm (Tween Mode)",
     CurrentValue = false,
@@ -93,7 +93,6 @@ MainTab:CreateToggle({
                         local humanoid = char and char:FindFirstChildOfClass("Humanoid")
                         if not root or (humanoid and humanoid.Health <= 0) then return end
 
-                        -- Dynamic Refresh: Busca la carpeta en cada ciclo por si cambia de entorno
                         local orbsFolder = getOrbsFolder()
 
                         if orbsFolder then
@@ -133,7 +132,7 @@ MainTab:CreateButton({
     Name = "🔄 Refresh Orb List & Count",
     Callback = function()
         local orbsFolder = getOrbsFolder()
-        collectgarbage("collect") -- Fuerza la liberación de memoria de instancias borradas
+        collectgarbage("collect")
 
         if orbsFolder then
             local totalOrbs = #orbsFolder:GetChildren()
@@ -193,12 +192,6 @@ MainTab:CreateButton({
                 e.Enabled = false
             end
         end
-
-        workspace.DescendantAdded:Connect(function(v)
-            if v:IsA("Smoke") or v:IsA("Fire") or v:IsA("Sparkles") or v:IsA("ForceField") then
-                v:Destroy()
-            end
-        end)
 
         Rayfield:Notify({
             Title = " FPS Boost",
@@ -537,7 +530,7 @@ MainTab:CreateButton({
             Rayfield:Notify({
                 Title = "Anti-AFK",
                 Content = "Activado correctamente.",
-                Duration = 9999
+                Duration = 5
             })
         else
             Rayfield:Notify({
@@ -641,9 +634,8 @@ getgenv().selectedstat = "vitality"
 local StatDropdown = StatsTab:CreateDropdown({
     Name = "Select Stat",
     Options = GetAutoStatsList(),
-    CurrentOption = {"vitality"},
+    CurrentOption = "vitality", -- CORREGIDO: Ajustado a string simple para prevenir bugs de herencia de Rayfield
     MultipleOptions = false,
-    Flag = "SelectedStatFlag",
     Callback = function(Option)
         if type(Option) == "table" then
             getgenv().selectedstat = Option[1]
