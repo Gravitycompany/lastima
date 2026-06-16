@@ -506,16 +506,16 @@ MainTab:CreateButton({
             enableAntiAFK()
             player.CharacterAdded:Connect(enableAntiAFK)
 
-            Rayfield:Notify({
+Rayfield:Notify({
                 Title = "Anti-AFK",
                 Content = "Activado correctamente.",
-                Duration = 10
+                Duration = 300 -- Modificado: Ahora dura 5 minutos en pantalla
             })
         else
             Rayfield:Notify({
                 Title = "Anti-AFK",
                 Content = "Desactivado.",
-                Duration = 10
+                Duration = 3 -- Modificado: Desaparece rápido al apagarlo
             })
         end
     end,
