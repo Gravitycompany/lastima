@@ -485,7 +485,7 @@ MainTab:CreateButton({
     end,
 })
 
--- ANTI-AFK BUTTON
+-- ANTI-AFK BUTTON (Tu código original con mensaje eterno en pantalla)
 local AntiAFK_Enabled = false
 MainTab:CreateButton({
     Name = "Anti-AFK",
@@ -506,16 +506,60 @@ MainTab:CreateButton({
             enableAntiAFK()
             player.CharacterAdded:Connect(enableAntiAFK)
 
-Rayfield:Notify({
+            -- ========================================================
+            -- CREACIÓN DEL MENSAJE ETERNO (No desaparece solo)
+            -- ========================================================
+            if not getgenv().AntiAFK_UI then
+                getgenv().AntiAFK_UI = Instance.new("ScreenGui")
+                getgenv().AntiAFK_UI.Name = "AntiAFK_StatusUI"
+                getgenv().AntiAFK_UI.ResetOnSpawn = false
+                getgenv().AntiAFK_UI.Parent = game:GetService("CoreGui")
+
+                local Frame = Instance.new("Frame")
+                Frame.Size = UDim2.new(0, 180, 0, 35)
+                Frame.Position = UDim2.new(0.02, 0, 0.85, 0) -- Abajo a la izquierda de la pantalla
+                Frame.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+                Frame.BorderSizePixel = 0
+                Frame.Parent = getgenv().AntiAFK_UI
+
+                local Corner = Instance.new("UICorner")
+                Corner.CornerRadius = UDim.new(0, 6)
+                Corner.Parent = Frame
+
+                local Stroke = Instance.new("UIStroke")
+                Stroke.Color = Color3.fromRGB(0, 200, 100) -- Borde verde brillante
+                Stroke.Thickness = 1.5
+                Stroke.Parent = Frame
+
+                local TextLabel = Instance.new("TextLabel")
+                TextLabel.Size = UDim2.new(1, 0, 1, 0)
+                TextLabel.BackgroundTransparency = 1
+                TextLabel.Font = Enum.Font.GothamBold
+                TextLabel.Text = "🟢 Anti-AFK: ACTIVO"
+                TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+                TextLabel.TextSize = 13
+                TextLabel.Parent = Frame
+            end
+
+            -- Notificación rápida (Esta se irá, pero el recuadro verde se queda)
+            Rayfield:Notify({
                 Title = "Anti-AFK",
                 Content = "Activado correctamente.",
-                Duration = 300 -- Modificado: Ahora dura 5 minutos en pantalla
+                Duration = 4
             })
         else
+            -- ========================================================
+            -- BORRAR EL MENSAJE ETERNO AL DESACTIVAR
+            -- ========================================================
+            if getgenv().AntiAFK_UI then
+                getgenv().AntiAFK_UI:Destroy()
+                getgenv().AntiAFK_UI = nil
+            end
+
             Rayfield:Notify({
                 Title = "Anti-AFK",
                 Content = "Desactivado.",
-                Duration = 3 -- Modificado: Desaparece rápido al apagarlo
+                Duration = 3
             })
         end
     end,
